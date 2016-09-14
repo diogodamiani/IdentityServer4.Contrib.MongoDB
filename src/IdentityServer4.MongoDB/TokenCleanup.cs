@@ -8,20 +8,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdentityServer4.MongoDB.DbContexts;
 using IdentityServer4.MongoDB.Interfaces;
+using IdentityServer4.MongoDB.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace IdentityServer4.MongoDB
 {
     public class TokenCleanup
     {
-        //private readonly DbContextOptions<PersistedGrantDbContext> options;
+        private readonly IOptions<MongoDBConfiguration> options;
         private readonly TimeSpan interval;
         private CancellationTokenSource source;
 
-        public TokenCleanup(int interval = 60)
+        public TokenCleanup(IOptions<MongoDBConfiguration> options, int interval = 60)
         {
-            //if (options == null) throw new ArgumentNullException(nameof(options));
+            if (options == null) throw new ArgumentNullException(nameof(options));
             if (interval < 1) throw new ArgumentException("interval must be more than 1 second");
-            //this.options = options;
+            this.options = options;
 
             this.interval = TimeSpan.FromSeconds(interval);
         }
@@ -74,7 +76,7 @@ namespace IdentityServer4.MongoDB
 
         protected virtual IPersistedGrantDbContext CreateOperationalDbContext()
         {
-            return new PersistedGrantDbContext();
+            return new PersistedGrantDbContext(options);
         }
 
         private async Task ClearTokens()

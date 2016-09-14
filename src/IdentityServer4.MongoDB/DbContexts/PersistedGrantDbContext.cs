@@ -9,16 +9,19 @@ using MongoDB.Driver;
 using System.Linq;
 using System;
 using System.Linq.Expressions;
+using Microsoft.Extensions.Options;
+using IdentityServer4.MongoDB.Configuration;
 
 namespace IdentityServer4.MongoDB.DbContexts
 {
-    public class PersistedGrantDbContext : MongoDBContext, IPersistedGrantDbContext
+    public class PersistedGrantDbContext : MongoDBContextBase, IPersistedGrantDbContext
     {
         private IMongoCollection<PersistedGrant> _persistedGrants;
 
-        public PersistedGrantDbContext()
+        public PersistedGrantDbContext(IOptions<MongoDBConfiguration> settings) 
+            : base(settings)
         {
-            _persistedGrants = DB.GetCollection<PersistedGrant>(Constants.TableNames.PersistedGrant);
+            _persistedGrants = Database.GetCollection<PersistedGrant>(Constants.TableNames.PersistedGrant);
         }
 
         public IQueryable<PersistedGrant> PersistedGrants

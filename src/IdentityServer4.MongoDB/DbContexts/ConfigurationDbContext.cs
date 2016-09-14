@@ -8,18 +8,20 @@ using IdentityServer4.MongoDB.Interfaces;
 using System.Linq;
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
+using IdentityServer4.MongoDB.Configuration;
 
 namespace IdentityServer4.MongoDB.DbContexts
 {
-    public class ConfigurationDbContext : MongoDBContext, IConfigurationDbContext
+    public class ConfigurationDbContext : MongoDBContextBase, IConfigurationDbContext
     {
         private IMongoCollection<Client> _clients;
         private IMongoCollection<Scope> _scopes;
 
-        public ConfigurationDbContext()
+        public ConfigurationDbContext(IOptions<MongoDBConfiguration> settings)
+            : base(settings)
         {
-            _clients = DB.GetCollection<Client>(Constants.TableNames.Client);
-            _scopes = DB.GetCollection<Scope>(Constants.TableNames.Scope);
+            _clients = Database.GetCollection<Client>(Constants.TableNames.Client);
+            _scopes = Database.GetCollection<Scope>(Constants.TableNames.Scope);
         }
 
         public IQueryable<Client> Clients
@@ -30,5 +32,16 @@ namespace IdentityServer4.MongoDB.DbContexts
         {
             get { return _scopes.AsQueryable(); }
         }
+
+        public Task AddClient(Client entity)
+        {
+            return _clients.InsertOneAsync(entity);
+        }
+
+        public Task AddScope(Scope entity)
+        {
+            return _scopes.InsertOneAsync(entity);
+        }
+
     }
 }

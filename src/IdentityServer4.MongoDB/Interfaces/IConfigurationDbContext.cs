@@ -13,5 +13,9 @@ namespace IdentityServer4.MongoDB.Interfaces
     {
         IQueryable<Client> Clients { get; }
         IQueryable<Scope> Scopes { get; }
+
+        Task AddClient(Client entity);
+
+        Task AddScope(Scope entity);
     }
 }

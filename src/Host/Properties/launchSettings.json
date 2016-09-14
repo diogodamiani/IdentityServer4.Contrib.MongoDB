@@ -14,6 +14,17 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+<<<<<<< HEAD
+=======
+    },
+    "Host": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:1941",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+>>>>>>> dev
     }
   }
 }

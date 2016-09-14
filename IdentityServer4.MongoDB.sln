@@ -7,6 +7,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityServer4.MongoDB", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1E3859B1-7876-4B22-B7B6-1049D0344E52}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Host", "src\Host\Host.xproj", "{58853B9A-715B-417A-B8CE-76A54B4337B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,11 +19,16 @@ Global
 		{9511145A-8DAD-446C-9D15-A4952DCB9BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9511145A-8DAD-446C-9D15-A4952DCB9BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9511145A-8DAD-446C-9D15-A4952DCB9BA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58853B9A-715B-417A-B8CE-76A54B4337B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58853B9A-715B-417A-B8CE-76A54B4337B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58853B9A-715B-417A-B8CE-76A54B4337B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58853B9A-715B-417A-B8CE-76A54B4337B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9511145A-8DAD-446C-9D15-A4952DCB9BA5} = {1E3859B1-7876-4B22-B7B6-1049D0344E52}
+		{58853B9A-715B-417A-B8CE-76A54B4337B5} = {1E3859B1-7876-4B22-B7B6-1049D0344E52}
 	EndGlobalSection
 EndGlobal

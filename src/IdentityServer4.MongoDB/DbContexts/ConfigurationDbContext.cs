@@ -33,14 +33,14 @@ namespace IdentityServer4.MongoDB.DbContexts
             get { return _scopes.AsQueryable(); }
         }
 
-        public Task AddClient(Client entity)
+        public async Task AddClient(Client entity)
         {
-            return _clients.InsertOneAsync(entity);
+            await _clients.InsertOneAsync(entity);
         }
 
-        public Task AddScope(Scope entity)
+        public async Task AddScope(Scope entity)
         {
-            return _scopes.InsertOneAsync(entity);
+            await _scopes.InsertOneAsync(entity);
         }
 
     }

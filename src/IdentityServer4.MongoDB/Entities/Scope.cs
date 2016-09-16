@@ -2,13 +2,14 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using MongoDB.Bson;
 using System.Collections.Generic;
 
 namespace IdentityServer4.MongoDB.Entities
 {
     public class Scope
     {
-        public int Id { get; set; }
+        public ObjectId Id { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public bool Enabled { get; set; }

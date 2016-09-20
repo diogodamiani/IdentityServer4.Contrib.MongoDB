@@ -10,6 +10,7 @@ using IdentityServer4.MongoDB.Stores;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -17,11 +18,40 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class IdentityServerMongoDBBuilderExtensions
     {
         public static IIdentityServerBuilder AddConfigurationStore(
+           this IIdentityServerBuilder builder, Action<MongoDBConfiguration> setupAction)
+        {
+            builder.Services.Configure(setupAction);
+
+            return builder.AddConfigurationStore();
+        }
+
+        public static IIdentityServerBuilder AddConfigurationStore(
             this IIdentityServerBuilder builder, IConfiguration configuration)
         {
-            builder.Services.AddOptions();
-            builder.Services.Configure<MongoDBConfiguration>(configuration.GetSection("MongoDB"));
+            builder.Services.Configure<MongoDBConfiguration>(configuration);
 
+            return builder.AddConfigurationStore();
+        }
+
+        public static IIdentityServerBuilder AddOperationalStore(
+           this IIdentityServerBuilder builder, Action<MongoDBConfiguration> setupAction)
+        {
+            builder.Services.Configure(setupAction);
+
+            return builder.AddOperationalStore();
+        }
+
+        public static IIdentityServerBuilder AddOperationalStore(
+            this IIdentityServerBuilder builder, IConfiguration configuration)
+        {
+            builder.Services.Configure<MongoDBConfiguration>(configuration);
+
+            return builder.AddOperationalStore();
+        }
+
+        private static IIdentityServerBuilder AddConfigurationStore(
+            this IIdentityServerBuilder builder)
+        {
             builder.Services.AddScoped<IConfigurationDbContext, ConfigurationDbContext>();
 
             builder.Services.AddTransient<IClientStore, ClientStore>();
@@ -31,12 +61,9 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IIdentityServerBuilder AddOperationalStore(
-            this IIdentityServerBuilder builder, IConfiguration configuration)
+        private static IIdentityServerBuilder AddOperationalStore(
+            this IIdentityServerBuilder builder)
         {
-            builder.Services.AddOptions();
-            builder.Services.Configure<MongoDBConfiguration>(configuration.GetSection("MongoDB"));
-
             builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
 
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();

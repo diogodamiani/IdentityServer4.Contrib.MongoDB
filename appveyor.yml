@@ -15,4 +15,4 @@ skip_commits:
   # Regex for matching commit message
   message: /docs.*/
   files:
-    - *.md
+    - ./*.md

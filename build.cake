@@ -29,23 +29,23 @@ Task("Build")
     }
 });
 
-Task("RunTests")
-    .IsDependentOn("Restore")
-    .IsDependentOn("Clean")
-    .Does(() =>
-{
-    var projects = GetFiles("./test/**/project.json");
-
-    foreach(var project in projects)
-	{
-        var settings = new DotNetCoreTestSettings
-        {
-            Configuration = configuration
-        };
-
-        DotNetCoreTest(project.GetDirectory().FullPath, settings);
-    }
-});
+//Task("RunTests")
+//    .IsDependentOn("Restore")
+//    .IsDependentOn("Clean")
+//    .Does(() =>
+//{
+//    var projects = GetFiles("./test/**/project.json");
+//
+//    foreach(var project in projects)
+//	{
+//        var settings = new DotNetCoreTestSettings
+//        {
+//            Configuration = configuration
+//        };
+//
+//        DotNetCoreTest(project.GetDirectory().FullPath, settings);
+//    }
+//});
 
 Task("Pack")
     .IsDependentOn("Restore")
@@ -82,12 +82,12 @@ Task("Restore")
     };
 
     DotNetCoreRestore(sourcePath, settings);
-    DotNetCoreRestore(testsPath, settings);
+    //DotNetCoreRestore(testsPath, settings);
 });
 
 Task("Default")
   .IsDependentOn("Build")
-  .IsDependentOn("RunTests")
+  //.IsDependentOn("RunTests")
   .IsDependentOn("Pack");
 
 RunTarget(target);

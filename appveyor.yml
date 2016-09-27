@@ -12,5 +12,5 @@ artifacts:
 #  Skip builds for doc changes    #
 #---------------------------------#
 skip_commits:
-# Regex for matching commit message
-message: /docs.*/
+  # Regex for matching commit message
+  message: /docs.*/

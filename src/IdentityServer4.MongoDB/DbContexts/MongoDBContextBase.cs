@@ -14,6 +14,15 @@ namespace IdentityServer4.MongoDB.DbContexts
         
         public MongoDBContextBase(IOptions<MongoDBConfiguration> settings)
         {
+            if (settings.Value == null)
+                throw new ArgumentNullException(nameof(settings), "MongoDBConfiguration cannot be null.");
+
+            if (settings.Value.ConnectionString == null)
+                throw new ArgumentNullException(nameof(settings), "MongoDBConfiguration.ConnectionString cannot be null.");
+
+            if (settings.Value.Database == null)
+                throw new ArgumentNullException(nameof(settings), "MongoDBConfiguration.Database cannot be null.");
+
             var client = new MongoClient(settings.Value.ConnectionString);
             _database = client.GetDatabase(settings.Value.Database);
         }

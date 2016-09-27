@@ -41,9 +41,9 @@ namespace Host
             services.AddIdentityServer()
                 .SetTemporarySigningCredential()
                 .AddInMemoryUsers(Users.Get())
-                
-                .AddConfigurationStore(_configuration)
-                .AddOperationalStore(_configuration);
+
+                .AddConfigurationStore(_configuration.GetSection("MongoDB"))
+                .AddOperationalStore(_configuration.GetSection("MongoDB"));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -58,7 +58,7 @@ namespace Host
             loggerFactory.AddSerilog();
 
             //app.UseDeveloperExceptionPage();
-            
+
             // Setup Databases
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {

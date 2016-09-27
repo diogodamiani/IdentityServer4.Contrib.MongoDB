@@ -2,7 +2,14 @@
   "version": "1.0.0-rc1-update2",
   "authors": [ "Diogo Damiani" ],
   "description": "MongoDB persistence layer for IdentityServer4",
-
+  
+  "packOptions": {
+    "tags": [ "OAuth2", "OAuth 2.0", "OpenID Connect", "Security", "Identity", "IdentityServer", "MongoDB" ],
+    "projectUrl": "https://github.com/diogodamiani/IdentityServer4.MongoDB",
+    "licenseUrl": "https://github.com/diogodamiani/IdentityServer4.MongoDB/LICENSE",
+    "iconUrl": "https://identityserver.github.io/Documentation/assets/images/icons/IDserver_icon128.jpg"
+  },
+  
   "dependencies": {
     "AutoMapper": "5.1.1",
     "IdentityServer4": "1.0.0-rc1-update2",

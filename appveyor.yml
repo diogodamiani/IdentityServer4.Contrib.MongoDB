@@ -1,0 +1,16 @@
+version: 1.0.{build}
+branches:
+  only:
+  - dev
+build_script:
+- ps: .\build.ps1
+test: off
+artifacts:
+- path: artifacts/packages/*.nupkg
+
+#---------------------------------#
+#  Skip builds for doc changes    #
+#---------------------------------#
+skip_commits:
+# Regex for matching commit message
+message: /docs.*/

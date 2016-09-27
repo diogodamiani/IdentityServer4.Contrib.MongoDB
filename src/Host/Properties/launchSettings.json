@@ -14,6 +14,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+<<<<<<< HEAD
+=======
     },
     "Host": {
       "commandName": "Project",
@@ -22,6 +24,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+>>>>>>> dev
     }
   }
 }

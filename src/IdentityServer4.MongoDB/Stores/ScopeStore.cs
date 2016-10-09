@@ -10,29 +10,36 @@ using IdentityServer4.MongoDB.Interfaces;
 using IdentityServer4.MongoDB.Mappers;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityServer4.MongoDB.Stores
 {
     public class ScopeStore : IScopeStore
     {
-        private readonly IConfigurationDbContext context;
+        private readonly IConfigurationDbContext _context;
+        private readonly ILogger<ScopeStore> _logger;
 
-        public ScopeStore(IConfigurationDbContext context)
+        public ScopeStore(IConfigurationDbContext context, ILogger<ScopeStore> logger)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
-            this.context = context;
+            
+            _context = context;
+            _logger = logger;
         }
 
         public Task<IEnumerable<Scope>> FindScopesAsync(IEnumerable<string> scopeNames)
         {
-            IQueryable<Entities.Scope> scopes = context.Scopes;
+            IQueryable<Entities.Scope> scopes = _context.Scopes;
 
             if (scopeNames != null && scopeNames.Any())
             {
                 scopes = scopes.Where(x => scopeNames.Contains(x.Name));
             }
-
+            
             var foundScopes = scopes.ToList();
+
+            _logger.LogDebug("Found {scopes} scopes in database", foundScopes.Select(x => x.Name));
+            
             var model = foundScopes.Select(x => x.ToModel());
 
             return Task.FromResult(model);
@@ -40,7 +47,7 @@ namespace IdentityServer4.MongoDB.Stores
 
         public Task<IEnumerable<Scope>> GetScopesAsync(bool publicOnly = true)
         {
-            IQueryable<Entities.Scope> scopes = context.Scopes;
+            IQueryable<Entities.Scope> scopes = _context.Scopes;
 
             if (publicOnly)
             {
@@ -48,6 +55,9 @@ namespace IdentityServer4.MongoDB.Stores
             }
 
             var foundScopes = scopes.ToList();
+
+            _logger.LogDebug("Found {scopes} scopes in database", foundScopes.Select(x => x.Name));
+
             var model = foundScopes.Select(x => x.ToModel());
 
             return Task.FromResult(model);

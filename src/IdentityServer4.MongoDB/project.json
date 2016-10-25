@@ -9,11 +9,11 @@
     "licenseUrl": "https://github.com/diogodamiani/IdentityServer4.MongoDB/LICENSE",
     "iconUrl": "https://identityserver.github.io/Documentation/assets/images/icons/IDserver_icon128.jpg"
   },
-  
+
   "dependencies": {
     "AutoMapper": "5.1.1",
     "IdentityServer4": "1.0.0-rc2",
-    "MongoDB.Driver": "2.3.0-rc1",
+    "MongoDB.Driver": "2.3.0",
     "NETStandard.Library": "1.6.0"
   },
 

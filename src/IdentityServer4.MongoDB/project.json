@@ -1,8 +1,8 @@
 {
-  "version": "1.0.0-rc2-update1",
+  "version": "1.0.0-rc5",
   "authors": [ "Diogo Damiani" ],
   "description": "MongoDB persistence layer for IdentityServer4",
-  
+
   "packOptions": {
     "tags": [ "OAuth2", "OAuth 2.0", "OpenID Connect", "Security", "Identity", "IdentityServer", "MongoDB" ],
     "projectUrl": "https://github.com/diogodamiani/IdentityServer4.MongoDB",
@@ -11,10 +11,10 @@
   },
 
   "dependencies": {
-    "AutoMapper": "5.1.1",
-    "IdentityServer4": "1.0.0-rc2",
-    "MongoDB.Driver": "2.3.0",
-    "NETStandard.Library": "1.6.0"
+    "AutoMapper": "5.2.0",
+    "IdentityServer4": "1.0.0-rc5",
+    "MongoDB.Driver": "2.4.0",
+    "NETStandard.Library": "1.6.1"
   },
 
   "frameworks": {

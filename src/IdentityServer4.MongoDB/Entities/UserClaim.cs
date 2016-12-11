@@ -4,7 +4,9 @@
 
 namespace IdentityServer4.MongoDB.Entities
 {
-    public class ClientSecret : Secret
+    public abstract class UserClaim
     {
+        public int Id { get; set; }
+        public string Type { get; set; }
     }
 }

@@ -17,6 +17,7 @@ using IdentityServer4.MongoDB.Configuration;
 using IdentityServer4.MongoDB.Mappers;
 using Microsoft.Extensions.Configuration;
 using IdentityServer4.MongoDB.Interfaces;
+using IdentityServer4.Validation;
 
 namespace Host
 {
@@ -39,14 +40,16 @@ namespace Host
             services.AddMvc();
 
             services.AddIdentityServer()
-                .SetTemporarySigningCredential()
+                .AddTemporarySigningCredential()
                 .AddInMemoryUsers(Users.Get())
+                .AddSecretParser<ClientAssertionSecretParser>()
+                .AddSecretValidator<PrivateKeyJwtSecretValidator>()
 
                 .AddConfigurationStore(_configuration.GetSection("MongoDB"))
                 .AddOperationalStore(_configuration.GetSection("MongoDB"));
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
@@ -63,14 +66,11 @@ namespace Host
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 EnsureSeedData(serviceScope.ServiceProvider.GetService<IConfigurationDbContext>());
-
-                var options = serviceScope.ServiceProvider.GetService<IOptions<MongoDBConfiguration>>();
-                var tokenCleanup = new TokenCleanup(options);
-                tokenCleanup.Start();
             }
 
             app.UseIdentityServer();
-            
+            app.UseIdentityServerMongoDBTokenCleanup(applicationLifetime);
+
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
         }
@@ -85,11 +85,19 @@ namespace Host
                 }
             }
 
-            if (!context.Scopes.Any())
+            if (!context.IdentityResources.Any())
             {
-                foreach (var scope in Scopes.Get().ToList())
+                foreach (var resource in Resources.GetIdentityResources().ToList())
                 {
-                    context.AddScope(scope.ToEntity());
+                    context.AddIdentityResource(resource.ToEntity());
+                }
+            }
+
+            if (!context.ApiResources.Any())
+            {
+                foreach (var resource in Resources.GetApiResources().ToList())
+                {
+                    context.AddApiResource(resource.ToEntity());
                 }
             }
         }

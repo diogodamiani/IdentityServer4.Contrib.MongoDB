@@ -2,15 +2,15 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System.Threading.Tasks;
+using IdentityServer4.MongoDB.Configuration;
 using IdentityServer4.MongoDB.Entities;
 using IdentityServer4.MongoDB.Interfaces;
-using MongoDB.Driver;
-using System.Linq;
-using System;
-using System.Linq.Expressions;
 using Microsoft.Extensions.Options;
-using IdentityServer4.MongoDB.Configuration;
+using MongoDB.Driver;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace IdentityServer4.MongoDB.DbContexts
 {

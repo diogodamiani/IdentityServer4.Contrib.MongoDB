@@ -2,13 +2,10 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace IdentityServer4.MongoDB.DbContexts
 {
-    public class MongoDBContextBase
+    public class MongoDBContextBase : IDisposable
     {
         private readonly IMongoDatabase _database;
         
@@ -29,5 +26,9 @@ namespace IdentityServer4.MongoDB.DbContexts
 
         protected IMongoDatabase Database { get { return _database; } }
 
+        public void Dispose()
+        { 
+            // TODO
+        }
     }
 }

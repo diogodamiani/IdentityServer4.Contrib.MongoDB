@@ -8,11 +8,15 @@ namespace IdentityServer4.MongoDB
     {
         public class TableNames
         {
-            public const string Scope = "Scopes";
-            public const string ScopeClaim = "ScopeClaims";
-            public const string ScopeSecrets = "ScopeSecrets";
+            // Configuration
+            public const string IdentityResource = "IdentityResources";
+            public const string IdentityClaim = "IdentityClaims";
 
-            public const string PersistedGrant = "PersistedGrants";
+            public const string ApiResource = "ApiResources";
+            public const string ApiSecret = "ApiSecrets";
+            public const string ApiScope = "ApiScopes";
+            public const string ApiClaim = "ApiClaims";
+            public const string ApiScopeClaim = "ApiScopeClaims";
             
             public const string Client = "Clients";
             public const string ClientGrantType = "ClientGrantTypes";
@@ -23,6 +27,9 @@ namespace IdentityServer4.MongoDB
             public const string ClientClaim = "ClientClaims";
             public const string ClientIdPRestriction = "ClientIdPRestrictions";
             public const string ClientCorsOrigin = "ClientCorsOrigins";
+
+            // Operational
+            public const string PersistedGrant = "PersistedGrants";
         }
     }
 }

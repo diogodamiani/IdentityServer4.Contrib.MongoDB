@@ -1,8 +1,6 @@
 {
   "dependencies": {
-
     "IdentityServer4.MongoDB": "1.0.0-*",
-    
     "Microsoft.AspNetCore.Diagnostics": "1.1.0",
     "Microsoft.AspNetCore.Mvc": "1.1.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
@@ -12,7 +10,6 @@
     "Microsoft.Extensions.Configuration.Json": "1.1.0",
     "Microsoft.Extensions.Logging.Console": "1.1.0",
     "Microsoft.Extensions.Logging.Debug": "1.1.0",
-
     "Serilog.Extensions.Logging": "1.3.1",
     "Serilog.Sinks.File": "3.1.1",
     "Serilog.Sinks.Literate": "2.0.0"
@@ -47,16 +44,13 @@
   "publishOptions": {
     "include": [
       "wwwroot",
+      "**/*.cshtml",
+      "appsettings.json",
       "web.config"
     ]
   },
 
   "scripts": {
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
-  },
-
-  "runtimes": {
-    "win10-x64": {},
-    "win7-x64": {}
   }
 }

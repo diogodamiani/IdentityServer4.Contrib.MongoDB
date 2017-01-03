@@ -2,22 +2,20 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System.Linq;
-using System.Reflection;
 using Host.Configuration;
+using IdentityServer4.MongoDB.Interfaces;
+using IdentityServer4.MongoDB.Mappers;
+using IdentityServer4.Quickstart.UI;
+using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using IdentityServer4.MongoDB.DbContexts;
-using IdentityServer4.MongoDB;
-using Microsoft.Extensions.Options;
-using IdentityServer4.MongoDB.Configuration;
-using IdentityServer4.MongoDB.Mappers;
-using Microsoft.Extensions.Configuration;
-using IdentityServer4.MongoDB.Interfaces;
-using IdentityServer4.Validation;
+using Serilog.Events;
+using System;
+using System.Linq;
 
 namespace Host
 {
@@ -41,7 +39,8 @@ namespace Host
 
             services.AddIdentityServer()
                 .AddTemporarySigningCredential()
-                .AddInMemoryUsers(Users.Get())
+                .AddTestUsers(TestUsers.Users)
+
                 .AddSecretParser<ClientAssertionSecretParser>()
                 .AddSecretValidator<PrivateKeyJwtSecretValidator>()
 
@@ -51,17 +50,27 @@ namespace Host
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
         {
-            Log.Logger = new LoggerConfiguration()
+            // serilog filter
+            Func<LogEvent, bool> serilogFilter = (e) =>
+            {
+                var context = e.Properties["SourceContext"].ToString();
+
+                return (context.StartsWith("\"IdentityServer") ||
+                        context.StartsWith("\"IdentityModel") ||
+                        e.Level == LogEventLevel.Error ||
+                        e.Level == LogEventLevel.Fatal);
+            };
+
+            var serilog = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
+                .Enrich.FromLogContext()
+                .Filter.ByIncludingOnly(serilogFilter)
+                .WriteTo.LiterateConsole(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message}{NewLine}{Exception}{NewLine}")
                 .WriteTo.File(@"c:\logs\IdentityServer4.MongoDB.Host.txt")
                 .CreateLogger();
 
-            loggerFactory.AddConsole();
-            loggerFactory.AddDebug();
-            loggerFactory.AddSerilog();
-
-            //app.UseDeveloperExceptionPage();
-
+            loggerFactory.AddSerilog(serilog);
+            
             // Setup Databases
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {

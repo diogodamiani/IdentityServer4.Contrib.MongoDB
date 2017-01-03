@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc5",
+  "version": "1.0.0-*",
   "authors": [ "Diogo Damiani" ],
   "description": "MongoDB persistence layer for IdentityServer4",
 
@@ -12,14 +12,12 @@
 
   "dependencies": {
     "AutoMapper": "5.2.0",
-    "IdentityServer4": "1.0.0-rc5",
+    "IdentityServer4": "1.0.0",
     "MongoDB.Driver": "2.4.0",
-    "NETStandard.Library": "1.6.1"
   },
 
   "frameworks": {
-    "netstandard1.6": {
-      "imports": "dnxcore50"
-    }
+    "netstandard1.5": {},
+    "net461": {}
   }
 }

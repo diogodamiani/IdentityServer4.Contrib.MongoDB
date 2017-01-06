@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServer4.MongoDB.Interfaces
 {
-    public interface IPersistedGrantDbContext //: IDisposable
+    public interface IPersistedGrantDbContext : IDisposable
     {
         IQueryable<PersistedGrant> PersistedGrants { get; }
 

@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using IdentityServer4.MongoDB.DbContexts;
+using IdentityServer4.MongoDB.Interfaces;
 using IdentityServer4.MongoDB.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServer4.MongoDB
 {
-    internal class TokenCleanup
+  internal class TokenCleanup
     {
         private readonly ILogger<TokenCleanup> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -90,9 +90,9 @@ namespace IdentityServer4.MongoDB
                 
                 using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
-                    using (var context = serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>())
+                    using (var context = serviceScope.ServiceProvider.GetService<IPersistedGrantDbContext>())
                     {
-                        var expired = context.PersistedGrants.Where(x => x.Expiration < DateTimeOffset.UtcNow).ToArray();
+                        var expired = context.PersistedGrants.Where(x => x.Expiration < DateTime.UtcNow).ToArray();
 
                         _logger.LogDebug("Clearing {tokenCount} tokens", expired.Length);
 

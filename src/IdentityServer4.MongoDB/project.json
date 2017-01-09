@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.1-*",
   "authors": [ "Diogo Damiani" ],
   "description": "MongoDB persistence layer for IdentityServer4",
 
@@ -12,8 +12,8 @@
 
   "dependencies": {
     "AutoMapper": "5.2.0",
-    "IdentityServer4": "1.0.0",
-    "MongoDB.Driver": "2.4.0",
+    "IdentityServer4": "1.0.1",
+    "MongoDB.Driver": "2.4.1",
   },
 
   "frameworks": {

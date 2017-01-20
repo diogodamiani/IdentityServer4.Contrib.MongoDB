@@ -27,9 +27,14 @@ namespace IdentityServer4.MongoDB.Services
 
         public Task<bool> IsOriginAllowedAsync(string origin)
         {
-            var origins = _context.Clients.SelectMany(x => x.AllowedCorsOrigins.Select(y => y.Origin)).ToList();
+            // If we use SelectMany directly, we got a NotSupportedException inside MongoDB driver.
+            // Details: 
+            // System.NotSupportedException: Unable to determine the serialization information for the collection 
+            // selector in the tree: aggregate([]).SelectMany(x => x.AllowedCorsOrigins.Select(y => y.Origin))
+            var origins = _context.Clients.Select(x => x.AllowedCorsOrigins.Select(y => y.Origin)).ToList();
 
-            var distinctOrigins = origins.Where(x => x != null).Distinct();
+            // As a workaround, we use SelectMany in memory.
+            var distinctOrigins = origins.SelectMany(o => o).Where(x => x != null).Distinct();
 
             var isAllowed = distinctOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase);
 

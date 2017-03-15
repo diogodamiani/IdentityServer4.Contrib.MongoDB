@@ -1,13 +1,28 @@
 version: 1.0.{build}
+
+image: Visual Studio 2017
+
 branches:
   only:
   - dev
+  
 build_script:
 - ps: .\build.ps1
+
 test: off
+
 artifacts:
 - path: artifacts/packages/*.nupkg
 
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/damiani/
+  api_key:
+    secure: XOm6HAYrck/gljqdDrLWHopqnOs/FwbstHoi61nIEX6SJNUyccAaLJ4hjsyHoSF8
+  skip_symbols: true
+  on:
+    branch: dev
+    
 #---------------------------------#
 #  Skip builds for doc changes    #
 #---------------------------------#

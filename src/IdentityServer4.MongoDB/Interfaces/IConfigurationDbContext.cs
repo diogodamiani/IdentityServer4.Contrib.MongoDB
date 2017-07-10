@@ -3,6 +3,7 @@
 
 
 using IdentityServer4.MongoDB.Entities;
+using IdentityServer4.Test;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,10 +16,14 @@ namespace IdentityServer4.MongoDB.Interfaces
         IQueryable<IdentityResource> IdentityResources { get; }
         IQueryable<ApiResource> ApiResources { get; }
 
+        IQueryable<TestUser> TestUsers { get; }
+
         Task AddClient(Client entity);
 
         Task AddIdentityResource(IdentityResource entity);
 
         Task AddApiResource(ApiResource entity);
+
+        Task AddTestUser(TestUser entity);
     }
 }

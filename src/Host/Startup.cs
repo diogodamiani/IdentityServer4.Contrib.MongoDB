@@ -39,7 +39,6 @@ namespace Host
 
             services.AddIdentityServer()
                 .AddTemporarySigningCredential()
-                .AddTestUsers(TestUsers.Users)
 
                 .AddSecretParser<ClientAssertionSecretParser>()
                 .AddSecretValidator<PrivateKeyJwtSecretValidator>()
@@ -107,6 +106,14 @@ namespace Host
                 foreach (var resource in Resources.GetApiResources().ToList())
                 {
                     context.AddApiResource(resource.ToEntity());
+                }
+            }
+
+            if (!context.TestUsers.Any())
+            {
+                foreach (var user in TestUsers.Users)
+                {
+                    context.AddTestUser(user);
                 }
             }
         }

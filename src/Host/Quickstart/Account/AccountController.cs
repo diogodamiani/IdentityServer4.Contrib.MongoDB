@@ -40,8 +40,6 @@ namespace IdentityServer4.Quickstart.UI
             IHttpContextAccessor httpContextAccessor,
             IMongoClient mongoClient)
         {
-            // if the TestUserStore is not in DI, then we'll just use the global users collection
-            //_users = users ?? new TestUserStore(TestUsers.Users);
             _interaction = interaction;
             _account = new AccountService(interaction, httpContextAccessor, clientStore);
             _mongoClient = mongoClient;
@@ -73,7 +71,7 @@ namespace IdentityServer4.Quickstart.UI
         {
             if (ModelState.IsValid)
             {
-                // validate username/password against in-memory store
+                // validate username/password against in-mongo
                 IMongoDatabase database = _mongoClient.GetDatabase("IS4");
                 IMongoCollection<UserExtended> userCollection = database.GetCollection<UserExtended>("Users");
 

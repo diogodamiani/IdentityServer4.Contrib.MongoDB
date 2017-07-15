@@ -4,3 +4,5 @@
 [![NuGet](https://img.shields.io/badge/NuGet-1.0.3-blue.svg)](https://www.nuget.org/packages/IdentityServer4.MongoDB/)
 
 MongoDB persistence layer for IdentityServer4 based on the Official [EntityFramework](https://github.com/IdentityServer/IdentityServer4.EntityFramework) persistence layer.
+
+Added Fruature: Users are kept in mongo!

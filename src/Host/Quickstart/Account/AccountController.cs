@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authentication;
 using MongoDB.Driver;
 using Host.Configuration;
 using IdentityServer4.MongoDB.Users;
+using Host.DataAccess;
 
 namespace IdentityServer4.Quickstart.UI
 {
@@ -33,6 +34,7 @@ namespace IdentityServer4.Quickstart.UI
         private readonly IIdentityServerInteractionService _interaction;
         private readonly AccountService _account;
         private readonly IMongoClient _mongoClient;
+        UserDataAccess userDataAccess;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
@@ -43,6 +45,7 @@ namespace IdentityServer4.Quickstart.UI
             _interaction = interaction;
             _account = new AccountService(interaction, httpContextAccessor, clientStore);
             _mongoClient = mongoClient;
+            userDataAccess = new UserDataAccess(_mongoClient);
         }
 
         /// <summary>
@@ -72,14 +75,9 @@ namespace IdentityServer4.Quickstart.UI
             if (ModelState.IsValid)
             {
                 // validate username/password against in-mongo
-                IMongoDatabase database = _mongoClient.GetDatabase("IS4");
-                IMongoCollection<UserExtended> userCollection = database.GetCollection<UserExtended>("Users");
+                UserExtended user = userDataAccess.GetUser(model);
 
-                var filter = Builders<UserExtended>.Filter.Where(e => e.Password == model.Password && e.Username == model.Username);
-
-                var findFluent = userCollection.Find(filter);
-
-                if (findFluent.Count() > 0)
+                if (user != null)
                 {
                     AuthenticationProperties props = null;
                     // only set explicit expiration here if persistent. 
@@ -94,7 +92,6 @@ namespace IdentityServer4.Quickstart.UI
                     };
 
                     // issue authentication cookie with subject ID and username
-                    var user = findFluent.FirstOrDefault();
                     await HttpContext.Authentication.SignInAsync(user.SubjectId, user.Username, props);
 
                     // make sure the returnUrl is still valid, and if yes - redirect back to authorize endpoint
@@ -239,24 +236,13 @@ namespace IdentityServer4.Quickstart.UI
             var provider = info.Properties.Items["scheme"];
             var userId = userIdClaim.Value;
 
-            IMongoDatabase database = _mongoClient.GetDatabase("IS4");
-            IMongoCollection<UserExtended> userCollection = database.GetCollection<UserExtended>("Users");
-
-            var findFluent = userCollection.Find(_ => true).ToList();
-
-            List<TestUser> testUsers = new List<TestUser>();
-        
-            findFluent.ForEach(t => testUsers.Add(t as TestUser));
-
-            TestUserStore _users = new TestUserStore(testUsers);
-
             // check if the external user is already provisioned
-            var user = _users.FindByExternalProvider(provider, userId);
+            var user = userDataAccess.GetUserByProvider(provider, userId);
             if (user == null)
             {
                 // this sample simply auto-provisions new external user
                 // another common approach is to start a registrations workflow first
-                //user = _users.AutoProvisionUser(provider, userId, claims);
+                user = userDataAccess.AutoProvisionUser(provider, userId, claims);
             }
             
             var additionalClaims = new List<Claim>();

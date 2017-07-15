@@ -5,4 +5,4 @@
 
 MongoDB persistence layer for IdentityServer4 based on the Official [EntityFramework](https://github.com/IdentityServer/IdentityServer4.EntityFramework) persistence layer.
 
-Added Fruature: Users are kept in mongo!
+Added Fruature: Users are being persisted in mongo!

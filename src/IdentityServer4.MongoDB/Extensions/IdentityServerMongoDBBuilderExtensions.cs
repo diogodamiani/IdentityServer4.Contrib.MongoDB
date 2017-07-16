@@ -9,11 +9,13 @@ using IdentityServer4.MongoDB.Interfaces;
 using IdentityServer4.MongoDB.Options;
 using IdentityServer4.MongoDB.Services;
 using IdentityServer4.MongoDB.Stores;
+using IdentityServer4.MongoDB.Users;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using MongoDB.Driver;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -53,6 +55,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.Services.Configure<MongoDBConfiguration>(configuration);
 
+
             return builder.AddOperationalStore(tokenCleanUpOptions);
         }
 
@@ -64,6 +67,17 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Services.AddTransient<IClientStore, ClientStore>();
             builder.Services.AddTransient<IResourceStore, ResourceStore>();
             builder.Services.AddTransient<ICorsPolicyService, CorsPolicyService>();
+
+            return builder;
+        }
+
+        public static IIdentityServerBuilder AddUserDataAccess(
+            this IIdentityServerBuilder builder)
+        {
+
+            builder.Services.AddTransient<IMongoClient, MongoClient>();
+
+            builder.Services.AddSingleton<UserDataAccess>();
 
             return builder;
         }
@@ -80,7 +94,7 @@ namespace Microsoft.Extensions.DependencyInjection
             tokenCleanUpOptions?.Invoke(tokenCleanupOptions);
             builder.Services.AddSingleton(tokenCleanupOptions);
             builder.Services.AddSingleton<TokenCleanup>();
-
+         
             return builder;
         }
 

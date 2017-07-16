@@ -39,13 +39,13 @@ namespace Host
 
             services.AddIdentityServer()
                 .AddTemporarySigningCredential()
-                .AddTestUsers(TestUsers.Users)
 
                 .AddSecretParser<ClientAssertionSecretParser>()
                 .AddSecretValidator<PrivateKeyJwtSecretValidator>()
 
                 .AddConfigurationStore(_configuration.GetSection("MongoDB"))
-                .AddOperationalStore(_configuration.GetSection("MongoDB"));
+                .AddOperationalStore(_configuration.GetSection("MongoDB"))
+                .AddUserDataAccess();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
@@ -107,6 +107,14 @@ namespace Host
                 foreach (var resource in Resources.GetApiResources().ToList())
                 {
                     context.AddApiResource(resource.ToEntity());
+                }
+            }
+
+            if (!context.TestUsers.Any())
+            {
+                foreach (var user in TestUsers.Users)
+                {
+                    context.AddTestUser(user);
                 }
             }
         }

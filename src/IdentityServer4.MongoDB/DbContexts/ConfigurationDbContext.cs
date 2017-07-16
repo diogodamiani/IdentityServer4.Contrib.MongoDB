@@ -5,6 +5,8 @@
 using IdentityServer4.MongoDB.Configuration;
 using IdentityServer4.MongoDB.Entities;
 using IdentityServer4.MongoDB.Interfaces;
+using IdentityServer4.MongoDB.Users;
+using IdentityServer4.Test;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.Linq;
@@ -17,6 +19,7 @@ namespace IdentityServer4.MongoDB.DbContexts
         private IMongoCollection<Client> _clients;
         private IMongoCollection<IdentityResource> _identityResources;
         private IMongoCollection<ApiResource> _apiResources;
+        private IMongoCollection<UserExtended> _testUser;
 
         public ConfigurationDbContext(IOptions<MongoDBConfiguration> settings)
             : base(settings)
@@ -24,6 +27,7 @@ namespace IdentityServer4.MongoDB.DbContexts
             _clients = Database.GetCollection<Client>(Constants.TableNames.Client);
             _identityResources = Database.GetCollection<IdentityResource>(Constants.TableNames.IdentityResource);
             _apiResources = Database.GetCollection<ApiResource>(Constants.TableNames.ApiResource);
+            _testUser = Database.GetCollection<UserExtended>(Constants.TableNames.User);
         }
 
         public IQueryable<Client> Clients
@@ -40,6 +44,11 @@ namespace IdentityServer4.MongoDB.DbContexts
             get { return _apiResources.AsQueryable(); }
         }
 
+        public IQueryable<UserExtended> TestUsers
+        {
+            get { return _testUser.AsQueryable(); }
+        }
+
         public async Task AddClient(Client entity)
         {
             await _clients.InsertOneAsync(entity);
@@ -53,6 +62,11 @@ namespace IdentityServer4.MongoDB.DbContexts
         public async Task AddApiResource(ApiResource entity)
         {
             await _apiResources.InsertOneAsync(entity);
+        }
+
+        public async Task AddTestUser(UserExtended entity)
+        {
+            await _testUser.InsertOneAsync(entity);
         }
 
     }

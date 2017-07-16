@@ -17,7 +17,8 @@ namespace IdentityServer4.MongoDB
             public const string ApiScope = "ApiScopes";
             public const string ApiClaim = "ApiClaims";
             public const string ApiScopeClaim = "ApiScopeClaims";
-            
+            public const string User = "Users";
+
             public const string Client = "Clients";
             public const string ClientGrantType = "ClientGrantTypes";
             public const string ClientRedirectUri = "ClientRedirectUris";

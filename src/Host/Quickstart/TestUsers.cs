@@ -3,6 +3,7 @@
 
 
 using IdentityModel;
+using IdentityServer4.MongoDB.Users;
 using IdentityServer4.Test;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -11,9 +12,9 @@ namespace IdentityServer4.Quickstart.UI
 {
     public class TestUsers
     {
-        public static List<TestUser> Users = new List<TestUser>
+        public static List<UserExtended> Users = new List<UserExtended>
         {
-            new TestUser{SubjectId = "818727", Username = "alice", Password = "alice", 
+            new UserExtended{SubjectId = "818727", Username = "alice", Password = "alice", 
                 Claims = 
                 {
                     new Claim(JwtClaimTypes.Name, "Alice Smith"),
@@ -25,7 +26,7 @@ namespace IdentityServer4.Quickstart.UI
                     new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServerConstants.ClaimValueTypes.Json)
                 }
             },
-            new TestUser{SubjectId = "88421113", Username = "bob", Password = "bob", 
+            new UserExtended{SubjectId = "88421113", Username = "bob", Password = "bob", 
                 Claims = 
                 {
                     new Claim(JwtClaimTypes.Name, "Bob Smith"),

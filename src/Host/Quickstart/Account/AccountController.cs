@@ -16,6 +16,9 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using MongoDB.Driver;
+using Host.Configuration;
+using IdentityServer4.MongoDB.Users;
 
 namespace IdentityServer4.Quickstart.UI
 {
@@ -27,20 +30,19 @@ namespace IdentityServer4.Quickstart.UI
     [SecurityHeaders]
     public class AccountController : Controller
     {
-        private readonly TestUserStore _users;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly AccountService _account;
+        UserDataAccess _userDataAccess;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IHttpContextAccessor httpContextAccessor,
-            TestUserStore users = null)
+            UserDataAccess userDataAccess)
         {
-            // if the TestUserStore is not in DI, then we'll just use the global users collection
-            _users = users ?? new TestUserStore(TestUsers.Users);
             _interaction = interaction;
             _account = new AccountService(interaction, httpContextAccessor, clientStore);
+            _userDataAccess = userDataAccess;
         }
 
         /// <summary>
@@ -69,8 +71,10 @@ namespace IdentityServer4.Quickstart.UI
         {
             if (ModelState.IsValid)
             {
-                // validate username/password against in-memory store
-                if (_users.ValidateCredentials(model.Username, model.Password))
+                // validate username/password against in-mongo
+                UserExtended user = _userDataAccess.GetUser(model.Password, model.Username);
+
+                if (user != null)
                 {
                     AuthenticationProperties props = null;
                     // only set explicit expiration here if persistent. 
@@ -85,7 +89,6 @@ namespace IdentityServer4.Quickstart.UI
                     };
 
                     // issue authentication cookie with subject ID and username
-                    var user = _users.FindByUsername(model.Username);
                     await HttpContext.Authentication.SignInAsync(user.SubjectId, user.Username, props);
 
                     // make sure the returnUrl is still valid, and if yes - redirect back to authorize endpoint
@@ -231,14 +234,14 @@ namespace IdentityServer4.Quickstart.UI
             var userId = userIdClaim.Value;
 
             // check if the external user is already provisioned
-            var user = _users.FindByExternalProvider(provider, userId);
+            var user = _userDataAccess.GetUserByProvider(provider, userId);
             if (user == null)
             {
                 // this sample simply auto-provisions new external user
                 // another common approach is to start a registrations workflow first
-                user = _users.AutoProvisionUser(provider, userId, claims);
+                user = _userDataAccess.AutoProvisionUser(provider, userId, claims);
             }
-
+            
             var additionalClaims = new List<Claim>();
 
             // if the external system sent a session id claim, copy it over

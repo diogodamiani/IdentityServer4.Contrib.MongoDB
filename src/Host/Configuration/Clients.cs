@@ -253,14 +253,14 @@ namespace Host.Configuration
 
                     RedirectUris =
                     {
-                        "http://localhost:5003/index.html",
-                        "http://localhost:5003/callback.html",
-                        "http://localhost:5003/silent.html",
-                        "http://localhost:5003/popup.html",
+                        "http://localhost:7017/index.html",
+                        "http://localhost:7017/callback.html",
+                        "http://localhost:7017/silent.html",
+                        "http://localhost:7017/popup.html",
                     },
 
-                    PostLogoutRedirectUris = { "http://localhost:5003/index.html" },
-                    AllowedCorsOrigins = { "http://localhost:5003" },
+                    PostLogoutRedirectUris = { "http://localhost:7017/index.html" },
+                    AllowedCorsOrigins = { "http://localhost:7017" },
 
                     AllowedScopes =
                     {

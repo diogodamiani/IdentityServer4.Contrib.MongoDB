@@ -44,7 +44,8 @@ namespace Host
                 .AddSecretValidator<PrivateKeyJwtSecretValidator>()
 
                 .AddConfigurationStore(_configuration.GetSection("MongoDB"))
-                .AddOperationalStore(_configuration.GetSection("MongoDB"));
+                .AddOperationalStore(_configuration.GetSection("MongoDB"))
+                .AddUserDataAccess();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)

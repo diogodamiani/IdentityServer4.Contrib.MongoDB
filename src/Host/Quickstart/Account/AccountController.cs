@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Authentication;
 using MongoDB.Driver;
 using Host.Configuration;
 using IdentityServer4.MongoDB.Users;
-using Host.DataAccess;
 
 namespace IdentityServer4.Quickstart.UI
 {
@@ -33,19 +32,17 @@ namespace IdentityServer4.Quickstart.UI
     {
         private readonly IIdentityServerInteractionService _interaction;
         private readonly AccountService _account;
-        private readonly IMongoClient _mongoClient;
-        UserDataAccess userDataAccess;
+        UserDataAccess _userDataAccess;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IHttpContextAccessor httpContextAccessor,
-            IMongoClient mongoClient)
+            UserDataAccess userDataAccess)
         {
             _interaction = interaction;
             _account = new AccountService(interaction, httpContextAccessor, clientStore);
-            _mongoClient = mongoClient;
-            userDataAccess = new UserDataAccess(_mongoClient);
+            _userDataAccess = userDataAccess;
         }
 
         /// <summary>
@@ -75,7 +72,7 @@ namespace IdentityServer4.Quickstart.UI
             if (ModelState.IsValid)
             {
                 // validate username/password against in-mongo
-                UserExtended user = userDataAccess.GetUser(model);
+                UserExtended user = _userDataAccess.GetUser(model.Password, model.Username);
 
                 if (user != null)
                 {
@@ -237,12 +234,12 @@ namespace IdentityServer4.Quickstart.UI
             var userId = userIdClaim.Value;
 
             // check if the external user is already provisioned
-            var user = userDataAccess.GetUserByProvider(provider, userId);
+            var user = _userDataAccess.GetUserByProvider(provider, userId);
             if (user == null)
             {
                 // this sample simply auto-provisions new external user
                 // another common approach is to start a registrations workflow first
-                user = userDataAccess.AutoProvisionUser(provider, userId, claims);
+                user = _userDataAccess.AutoProvisionUser(provider, userId, claims);
             }
             
             var additionalClaims = new List<Claim>();

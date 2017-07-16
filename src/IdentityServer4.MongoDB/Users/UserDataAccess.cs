@@ -1,6 +1,7 @@
 ﻿using IdentityModel;
+using IdentityServer4.MongoDB.Configuration;
 using IdentityServer4.MongoDB.Users;
-using IdentityServer4.Quickstart.UI;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Host.DataAccess
+namespace IdentityServer4.MongoDB.Users
 {
     public class UserDataAccess
     {
@@ -17,17 +18,17 @@ namespace Host.DataAccess
         readonly string dataBaseName = "IS4";
         readonly string collectionName = "Users";
 
-        public UserDataAccess(IMongoClient mongoClient)
+        public UserDataAccess(IMongoClient mongoClient, IOptions<MongoDBConfiguration> settings)
         {
-            _mongoClient = mongoClient;
+            _mongoClient = new MongoClient(settings.Value.ConnectionString);
         }
 
-        public UserExtended GetUser(LoginInputModel model)
+        public UserExtended GetUser(string password, string userName)
         {
             IMongoDatabase database = _mongoClient.GetDatabase(dataBaseName);
             IMongoCollection<UserExtended> userCollection = database.GetCollection<UserExtended>(collectionName);
 
-            var filter = Builders<UserExtended>.Filter.Where(e => e.Password == model.Password && e.Username == model.Username);
+            var filter = Builders<UserExtended>.Filter.Where(e => e.Password == password && e.Username == userName);
 
             var findFluent = userCollection.Find(filter);
 

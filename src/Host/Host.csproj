@@ -35,4 +35,8 @@
     <PackageReference Include="Serilog.Sinks.Literate" Version="2.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DataAccess\" />
+  </ItemGroup>
+
 </Project>

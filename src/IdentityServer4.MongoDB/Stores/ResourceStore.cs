@@ -81,7 +81,7 @@ namespace IdentityServer4.MongoDB.Stores
             return Task.FromResult(results.Select(x => x.ToModel()).ToArray().AsEnumerable());
         }
 
-        public Task<Resources> GetAllResources()
+        public Task<Resources> GetAllResourcesAsync()
         {
             var identity = _context.IdentityResources;
 

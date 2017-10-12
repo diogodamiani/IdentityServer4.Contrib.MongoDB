@@ -4,7 +4,7 @@
     <Description>MongoDB persistence layer for IdentityServer4</Description>
     <VersionPrefix>2.0.0</VersionPrefix>
     <Authors>Diogo Damiani</Authors>
-    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>IdentityServer4.MongoDB</AssemblyName>
     <PackageId>IdentityServer4.MongoDB</PackageId>
     <PackageTags>OAuth2;OAuth 2.0;OpenID Connect;Security;Identity;IdentityServer;MongoDB</PackageTags>
@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.1.1" />
-    <PackageReference Include="IdentityServer4" Version="2.0.0" />
+    <PackageReference Include="IdentityServer4" Version="2.0.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.4.4" />
   </ItemGroup>
 

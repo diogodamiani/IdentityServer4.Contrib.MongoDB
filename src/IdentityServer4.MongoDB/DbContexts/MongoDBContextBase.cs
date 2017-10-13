@@ -23,7 +23,17 @@ namespace IdentityServer4.MongoDB.DbContexts
 
 
             var clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.Value.ConnectionString));
-            clientSettings.SslSettings = settings.Value.SslSettings;
+            
+            if (clientSettings.SslSettings != null)
+            {
+                clientSettings.SslSettings = settings.Value.SslSettings;
+                clientSettings.UseSsl = true;
+            }
+            else
+            {
+                clientSettings.UseSsl = false;
+            }
+
             _client = new MongoClient(clientSettings);
 
             _database = _client.GetDatabase(settings.Value.Database);

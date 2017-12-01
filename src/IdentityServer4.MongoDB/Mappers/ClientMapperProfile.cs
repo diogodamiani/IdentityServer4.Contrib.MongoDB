@@ -24,6 +24,8 @@ namespace IdentityServer4.MongoDB.Mappers
         {
             // entity to model
             CreateMap<Client, Models.Client>(MemberList.Destination)
+				.ForMember(x => x.Properties,
+                    opt => opt.MapFrom(src => src.Properties.ToDictionary(item => item.Key, item => item.Value)))
                 .ForMember(x => x.AllowedGrantTypes,
                     opt => opt.MapFrom(src => src.AllowedGrantTypes.Select(x => x.GrantType)))
                 .ForMember(x => x.RedirectUris, opt => opt.MapFrom(src => src.RedirectUris.Select(x => x.RedirectUri)))
@@ -42,6 +44,8 @@ namespace IdentityServer4.MongoDB.Mappers
 
             // model to entity
             CreateMap<Models.Client, Client>(MemberList.Source)
+				.ForMember(x => x.Properties,
+                    opt => opt.MapFrom(src => src.Properties.ToList().Select(x => new ClientProperty { Key = x.Key, Value = x.Value })))
                 .ForMember(x => x.AllowedGrantTypes,
                     opt => opt.MapFrom(src => src.AllowedGrantTypes.Select(x => new ClientGrantType {GrantType = x})))
                 .ForMember(x => x.RedirectUris,

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>MongoDB persistence layer for IdentityServer4</Description>
-    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionPrefix>2.0.1</VersionPrefix>
     <Authors>Diogo Damiani</Authors>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>IdentityServer4.Contrib.MongoDB</AssemblyName>
@@ -15,6 +15,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Version>2.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

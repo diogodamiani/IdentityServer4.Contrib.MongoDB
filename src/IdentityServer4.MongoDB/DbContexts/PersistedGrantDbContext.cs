@@ -28,8 +28,20 @@ namespace IdentityServer4.MongoDB.DbContexts
         private void CreateIndexes()
         {
             var indexOptions = new CreateIndexOptions() { Background = true };
-            _persistedGrants.Indexes.CreateOne(Builders<PersistedGrant>.IndexKeys.Ascending(_ => _.Key), indexOptions);
-            _persistedGrants.Indexes.CreateOne(Builders<PersistedGrant>.IndexKeys.Ascending(_ => _.SubjectId), indexOptions);
+            var persistedGrandIndexKeys = Builders<PersistedGrant>.IndexKeys;
+            
+            _persistedGrants.Indexes.CreateOne(persistedGrandIndexKeys.Ascending(_ => _.Key), indexOptions);
+
+            _persistedGrants.Indexes.CreateOne(persistedGrandIndexKeys.Ascending(_ => _.SubjectId), indexOptions);
+            
+            _persistedGrants.Indexes.CreateOne(persistedGrandIndexKeys.Combine(
+                persistedGrandIndexKeys.Ascending(_ => _.ClientId),
+                persistedGrandIndexKeys.Ascending(_ => _.SubjectId)));
+            
+            _persistedGrants.Indexes.CreateOne(persistedGrandIndexKeys.Combine(
+                persistedGrandIndexKeys.Ascending(_ => _.ClientId),
+                persistedGrandIndexKeys.Ascending(_ => _.SubjectId),
+                persistedGrandIndexKeys.Ascending(_ => _.Type)));
         }
 
         public IQueryable<PersistedGrant> PersistedGrants

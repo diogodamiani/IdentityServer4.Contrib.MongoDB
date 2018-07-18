@@ -18,10 +18,18 @@ namespace IdentityServer4.MongoDB.DbContexts
     {
         private IMongoCollection<PersistedGrant> _persistedGrants;
 
-        public PersistedGrantDbContext(IOptions<MongoDBConfiguration> settings) 
+        public PersistedGrantDbContext(IOptions<MongoDBConfiguration> settings)
             : base(settings)
         {
             _persistedGrants = Database.GetCollection<PersistedGrant>(Constants.TableNames.PersistedGrant);
+            CreateIndexes();
+        }
+
+        private void CreateIndexes()
+        {
+            var indexOptions = new CreateIndexOptions() { Background = true };
+            _persistedGrants.Indexes.CreateOne(Builders<PersistedGrant>.IndexKeys.Ascending(_ => _.Key), indexOptions);
+            _persistedGrants.Indexes.CreateOne(Builders<PersistedGrant>.IndexKeys.Ascending(_ => _.SubjectId), indexOptions);
         }
 
         public IQueryable<PersistedGrant> PersistedGrants
@@ -36,9 +44,9 @@ namespace IdentityServer4.MongoDB.DbContexts
 
         public async Task Add(PersistedGrant entity)
         {
-           await _persistedGrants.InsertOneAsync(entity);
+            await _persistedGrants.InsertOneAsync(entity);
         }
-        
+
         public async Task Remove(Expression<Func<PersistedGrant, bool>> filter)
         {
             await _persistedGrants.DeleteManyAsync(filter);
@@ -46,7 +54,7 @@ namespace IdentityServer4.MongoDB.DbContexts
 
         public async Task RemoveExpired()
         {
-           await Remove(x => x.Expiration < DateTime.UtcNow);
+            await Remove(x => x.Expiration < DateTime.UtcNow);
         }
     }
 }

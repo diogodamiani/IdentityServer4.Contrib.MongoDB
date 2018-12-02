@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>MongoDB persistence layer for IdentityServer4</Description>
-    <VersionPrefix>2.0.1</VersionPrefix>
+    <VersionPrefix>2.3.1</VersionPrefix>
     <Authors>Diogo Damiani</Authors>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>IdentityServer4.Contrib.MongoDB</AssemblyName>
@@ -15,13 +15,13 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>2.0.1</Version>
+    <Version>2.3.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="6.2.1" />
-    <PackageReference Include="IdentityServer4" Version="2.0.4" />
-    <PackageReference Include="MongoDB.Driver" Version="2.4.4" />
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="IdentityServer4" Version="2.3.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.7.2" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">

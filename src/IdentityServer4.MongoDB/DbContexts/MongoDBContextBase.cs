@@ -7,9 +7,8 @@ namespace IdentityServer4.MongoDB.DbContexts
 {
     public class MongoDBContextBase : IDisposable
     {
-        private readonly IMongoDatabase _database;
         private readonly IMongoClient _client;
-        
+
         public MongoDBContextBase(IOptions<MongoDBConfiguration> settings)
         {
             if (settings.Value == null)
@@ -22,13 +21,13 @@ namespace IdentityServer4.MongoDB.DbContexts
                 throw new ArgumentNullException(nameof(settings), "MongoDBConfiguration.Database cannot be null.");
 
             _client = new MongoClient(settings.Value.ConnectionString);
-            _database = _client.GetDatabase(settings.Value.Database);
+            Database = _client.GetDatabase(settings.Value.Database);
         }
 
-        protected IMongoDatabase Database { get { return _database; } }
+        protected IMongoDatabase Database { get; }
 
         public void Dispose()
-        { 
+        {
             // TODO
         }
     }

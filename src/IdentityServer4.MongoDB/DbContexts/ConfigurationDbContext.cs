@@ -23,6 +23,16 @@ namespace IdentityServer4.MongoDB.DbContexts
             _clients = Database.GetCollection<Client>(Constants.TableNames.Client);
             _identityResources = Database.GetCollection<IdentityResource>(Constants.TableNames.IdentityResource);
             _apiResources = Database.GetCollection<ApiResource>(Constants.TableNames.ApiResource);
+            CreateIndexes();
+        }
+
+        private void CreateIndexes()
+        {
+            var indexOptions = new CreateIndexOptions() { Background = true };
+            _clients.Indexes.CreateOne(Builders<Client>.IndexKeys.Ascending(_ => _.ClientId), indexOptions);
+            _identityResources.Indexes.CreateOne(Builders<IdentityResource>.IndexKeys.Ascending(_ => _.Name), indexOptions);
+            _apiResources.Indexes.CreateOne(Builders<ApiResource>.IndexKeys.Ascending(_ => _.Name), indexOptions);
+            _apiResources.Indexes.CreateOne(Builders<ApiResource>.IndexKeys.Ascending(_ => _.Scopes), indexOptions);
         }
 
         public IQueryable<Client> Clients

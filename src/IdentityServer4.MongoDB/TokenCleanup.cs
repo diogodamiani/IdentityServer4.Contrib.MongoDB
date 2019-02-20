@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
 using IdentityServer4.MongoDB.Interfaces;
 using IdentityServer4.MongoDB.Options;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServer4.MongoDB
 {
-  internal class TokenCleanup
+    internal class TokenCleanup
     {
         private readonly ILogger<TokenCleanup> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -22,13 +21,11 @@ namespace IdentityServer4.MongoDB
 
         public TokenCleanup(IServiceProvider serviceProvider, ILogger<TokenCleanup> logger, TokenCleanupOptions options)
         {
-            if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));
-            if (logger == null) throw new ArgumentNullException(nameof(logger));
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (options.Interval < 1) throw new ArgumentException("interval must be more than 1 second");
-            
-            _logger = logger;
-            _serviceProvider = serviceProvider;
+
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _interval = TimeSpan.FromSeconds(options.Interval);
         }
 
@@ -78,7 +75,7 @@ namespace IdentityServer4.MongoDB
                     break;
                 }
 
-                ClearTokens();
+                _ = ClearTokens();
             }
         }
 
@@ -87,7 +84,7 @@ namespace IdentityServer4.MongoDB
             try
             {
                 _logger.LogTrace("Querying for tokens to clear");
-                
+
                 using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     using (var context = serviceScope.ServiceProvider.GetService<IPersistedGrantDbContext>())

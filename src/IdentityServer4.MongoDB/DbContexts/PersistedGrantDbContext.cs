@@ -16,7 +16,7 @@ namespace IdentityServer4.MongoDB.DbContexts
 {
     public class PersistedGrantDbContext : MongoDBContextBase, IPersistedGrantDbContext
     {
-        private IMongoCollection<PersistedGrant> _persistedGrants;
+        private readonly IMongoCollection<PersistedGrant> _persistedGrants;
 
         public PersistedGrantDbContext(IOptions<MongoDBConfiguration> settings)
             : base(settings)

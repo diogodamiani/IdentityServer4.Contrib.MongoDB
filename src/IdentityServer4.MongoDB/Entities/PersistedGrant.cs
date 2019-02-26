@@ -8,7 +8,7 @@ namespace IdentityServer4.MongoDB.Entities
 {
     public class PersistedGrant
     {
-        public ObjectId Id { get; set; }
+        //public ObjectId Id { get; set; }
         public string Key { get; set; }
         public string Type { get; set; }
         public string SubjectId { get; set; }

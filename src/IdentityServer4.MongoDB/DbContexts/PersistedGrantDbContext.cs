@@ -49,24 +49,19 @@ namespace IdentityServer4.MongoDB.DbContexts
             get { return _persistedGrants.AsQueryable(); }
         }
 
-        public async Task Update(Expression<Func<PersistedGrant, bool>> filter, PersistedGrant entity)
+        public Task Remove(Expression<Func<PersistedGrant, bool>> filter)
         {
-            await _persistedGrants.ReplaceOneAsync(filter, entity);
+            return _persistedGrants.DeleteManyAsync(filter);
         }
 
-        public async Task Add(PersistedGrant entity)
+        public Task RemoveExpired()
         {
-            await _persistedGrants.InsertOneAsync(entity);
+            return Remove(x => x.Expiration < DateTime.UtcNow);
         }
 
-        public async Task Remove(Expression<Func<PersistedGrant, bool>> filter)
+        public Task InsertOrUpdate(Expression<Func<PersistedGrant, bool>> filter, PersistedGrant entity)
         {
-            await _persistedGrants.DeleteManyAsync(filter);
-        }
-
-        public async Task RemoveExpired()
-        {
-            await Remove(x => x.Expiration < DateTime.UtcNow);
+            return _persistedGrants.ReplaceOneAsync(filter, entity, new UpdateOptions() {IsUpsert = true});
         }
     }
 }

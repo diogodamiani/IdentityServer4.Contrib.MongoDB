@@ -13,12 +13,10 @@ namespace IdentityServer4.MongoDB.Interfaces
     {
         IQueryable<PersistedGrant> PersistedGrants { get; }
 
-        Task Add(PersistedGrant entity);
-
-        Task Update(Expression<Func<PersistedGrant, bool>> filter, PersistedGrant entity);
-
         Task Remove(Expression<Func<PersistedGrant, bool>> filter);
 
         Task RemoveExpired();
+
+        Task InsertOrUpdate(Expression<Func<PersistedGrant, bool>> filter, PersistedGrant entity);
     }
 }

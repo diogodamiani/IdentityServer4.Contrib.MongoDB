@@ -25,32 +25,19 @@ namespace IdentityServer4.MongoDB.Stores
             _logger = logger;
         }
 
-        public Task StoreAsync(PersistedGrant token)
+        public async Task StoreAsync(PersistedGrant token)
         {
             try
             {
-                var existing = _context.PersistedGrants.SingleOrDefault(x => x.Key == token.Key);
-                if (existing == null)
-                {
-                    _logger.LogDebug("{persistedGrantKey} not found in database", token.Key);
-
-                    var persistedGrant = token.ToEntity();
-                    _context.Add(persistedGrant);
-                }
-                else
-                {
-                    _logger.LogDebug("{persistedGrantKey} found in database", token.Key);
-
-                    token.UpdateEntity(existing);
-                    _context.Update(x => x.Key == token.Key, existing);
-                }
+                _logger.LogDebug("Try to save or update {persistedGrantKey} in database", token.Key);
+                await _context.InsertOrUpdate(t => t.Key == token.Key, token.ToEntity());
+                _logger.LogDebug("{persistedGrantKey} stored in database", token.Key);
             }
             catch (Exception ex)
             {
                 _logger.LogError(0, ex, "Exception storing persisted grant");
+                throw;
             }
-
-            return Task.FromResult(0);
         }
 
         public Task<PersistedGrant> GetAsync(string key)

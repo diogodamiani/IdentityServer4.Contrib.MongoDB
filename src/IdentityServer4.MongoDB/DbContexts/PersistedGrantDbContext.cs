@@ -28,20 +28,27 @@ namespace IdentityServer4.MongoDB.DbContexts
         private void CreateIndexes()
         {
             var indexOptions = new CreateIndexOptions() { Background = true };
-            var persistedGrandIndexKeys = Builders<PersistedGrant>.IndexKeys;
-            
-            _persistedGrants.Indexes.CreateOne(persistedGrandIndexKeys.Ascending(_ => _.Key), indexOptions);
+            var builder = Builders<PersistedGrant>.IndexKeys;
 
-            _persistedGrants.Indexes.CreateOne(persistedGrandIndexKeys.Ascending(_ => _.SubjectId), indexOptions);
-            
-            _persistedGrants.Indexes.CreateOne(persistedGrandIndexKeys.Combine(
-                persistedGrandIndexKeys.Ascending(_ => _.ClientId),
-                persistedGrandIndexKeys.Ascending(_ => _.SubjectId)));
-            
-            _persistedGrants.Indexes.CreateOne(persistedGrandIndexKeys.Combine(
-                persistedGrandIndexKeys.Ascending(_ => _.ClientId),
-                persistedGrandIndexKeys.Ascending(_ => _.SubjectId),
-                persistedGrandIndexKeys.Ascending(_ => _.Type)));
+            var keyIndexModel = new CreateIndexModel<PersistedGrant>(builder.Ascending(_ => _.Key), indexOptions);
+            var subIndexModel = new CreateIndexModel<PersistedGrant>(builder.Ascending(_ => _.SubjectId), indexOptions);
+            var clientIdSubIndexModel = new CreateIndexModel<PersistedGrant>(
+              builder.Combine(
+                  builder.Ascending(_ => _.ClientId),
+                  builder.Ascending(_ => _.SubjectId)),
+              indexOptions);
+
+            var clientIdSubTypeIndexModel = new CreateIndexModel<PersistedGrant>(
+              builder.Combine(
+                  builder.Ascending(_ => _.ClientId),
+                  builder.Ascending(_ => _.SubjectId),
+                  builder.Ascending(_ => _.Type)),
+              indexOptions);
+
+            _persistedGrants.Indexes.CreateOne(keyIndexModel);
+            _persistedGrants.Indexes.CreateOne(subIndexModel);
+            _persistedGrants.Indexes.CreateOne(clientIdSubIndexModel);
+            _persistedGrants.Indexes.CreateOne(clientIdSubTypeIndexModel);
         }
 
         public IQueryable<PersistedGrant> PersistedGrants

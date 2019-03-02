@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
 using AutoMapper;
+
 using IdentityServer4.MongoDB.Entities;
+
 using System.Linq;
 
 namespace IdentityServer4.MongoDB.Mappers
@@ -21,6 +22,8 @@ namespace IdentityServer4.MongoDB.Mappers
         {
             // entity to model
             CreateMap<ApiResource, Models.ApiResource>(MemberList.Destination)
+                .ForMember(x => x.Properties,
+                    opt => opt.MapFrom(src => src.Properties.ToDictionary(item => item.Key, item => item.Value)))
                 .ForMember(x => x.ApiSecrets, opt => opt.MapFrom(src => src.Secrets.Select(x => x)))
                 .ForMember(x => x.Scopes, opt => opt.MapFrom(src => src.Scopes.Select(x => x)))
                 .ForMember(x => x.UserClaims, opts => opts.MapFrom(src => src.UserClaims.Select(x => x.Type)));
@@ -30,6 +33,8 @@ namespace IdentityServer4.MongoDB.Mappers
 
             // model to entity
             CreateMap<Models.ApiResource, ApiResource>(MemberList.Source)
+                .ForMember(x => x.Properties,
+                    opt => opt.MapFrom(src => src.Properties.ToDictionary(item => item.Key, item => item.Value)))
                 .ForMember(x => x.Secrets, opts => opts.MapFrom(src => src.ApiSecrets.Select(x => x)))
                 .ForMember(x => x.Scopes, opts => opts.MapFrom(src => src.Scopes.Select(x => x)))
                 .ForMember(x => x.UserClaims, opts => opts.MapFrom(src => src.UserClaims.Select(x => new ApiResourceClaim { Type = x })));

@@ -16,12 +16,39 @@ namespace IdentityServer4.MongoDB.DbContexts
 {
     public class PersistedGrantDbContext : MongoDBContextBase, IPersistedGrantDbContext
     {
-        private IMongoCollection<PersistedGrant> _persistedGrants;
+        private readonly IMongoCollection<PersistedGrant> _persistedGrants;
 
-        public PersistedGrantDbContext(IOptions<MongoDBConfiguration> settings) 
+        public PersistedGrantDbContext(IOptions<MongoDBConfiguration> settings)
             : base(settings)
         {
             _persistedGrants = Database.GetCollection<PersistedGrant>(Constants.TableNames.PersistedGrant);
+            CreateIndexes();
+        }
+
+        private void CreateIndexes()
+        {
+            var indexOptions = new CreateIndexOptions() { Background = true };
+            var builder = Builders<PersistedGrant>.IndexKeys;
+
+            var keyIndexModel = new CreateIndexModel<PersistedGrant>(builder.Ascending(_ => _.Key), indexOptions);
+            var subIndexModel = new CreateIndexModel<PersistedGrant>(builder.Ascending(_ => _.SubjectId), indexOptions);
+            var clientIdSubIndexModel = new CreateIndexModel<PersistedGrant>(
+              builder.Combine(
+                  builder.Ascending(_ => _.ClientId),
+                  builder.Ascending(_ => _.SubjectId)),
+              indexOptions);
+
+            var clientIdSubTypeIndexModel = new CreateIndexModel<PersistedGrant>(
+              builder.Combine(
+                  builder.Ascending(_ => _.ClientId),
+                  builder.Ascending(_ => _.SubjectId),
+                  builder.Ascending(_ => _.Type)),
+              indexOptions);
+
+            _persistedGrants.Indexes.CreateOne(keyIndexModel);
+            _persistedGrants.Indexes.CreateOne(subIndexModel);
+            _persistedGrants.Indexes.CreateOne(clientIdSubIndexModel);
+            _persistedGrants.Indexes.CreateOne(clientIdSubTypeIndexModel);
         }
 
         public IQueryable<PersistedGrant> PersistedGrants
@@ -29,24 +56,19 @@ namespace IdentityServer4.MongoDB.DbContexts
             get { return _persistedGrants.AsQueryable(); }
         }
 
-        public async Task Update(Expression<Func<PersistedGrant, bool>> filter, PersistedGrant entity)
+        public Task Remove(Expression<Func<PersistedGrant, bool>> filter)
         {
-            await _persistedGrants.ReplaceOneAsync(filter, entity);
+            return _persistedGrants.DeleteManyAsync(filter);
         }
 
-        public async Task Add(PersistedGrant entity)
+        public Task RemoveExpired()
         {
-           await _persistedGrants.InsertOneAsync(entity);
-        }
-        
-        public async Task Remove(Expression<Func<PersistedGrant, bool>> filter)
-        {
-            await _persistedGrants.DeleteManyAsync(filter);
+            return Remove(x => x.Expiration < DateTime.UtcNow);
         }
 
-        public async Task RemoveExpired()
+        public Task InsertOrUpdate(Expression<Func<PersistedGrant, bool>> filter, PersistedGrant entity)
         {
-           await Remove(x => x.Expiration < DateTime.UtcNow);
+            return _persistedGrants.ReplaceOneAsync(filter, entity, new UpdateOptions() {IsUpsert = true});
         }
     }
 }

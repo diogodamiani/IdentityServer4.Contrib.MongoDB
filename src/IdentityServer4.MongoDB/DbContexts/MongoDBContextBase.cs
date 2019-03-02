@@ -7,9 +7,8 @@ namespace IdentityServer4.MongoDB.DbContexts
 {
     public class MongoDBContextBase : IDisposable
     {
-        private readonly IMongoDatabase _database;
         private readonly IMongoClient _client;
-        
+
         public MongoDBContextBase(IOptions<MongoDBConfiguration> settings)
         {
             if (settings.Value == null)
@@ -21,14 +20,26 @@ namespace IdentityServer4.MongoDB.DbContexts
             if (settings.Value.Database == null)
                 throw new ArgumentNullException(nameof(settings), "MongoDBConfiguration.Database cannot be null.");
 
+            var clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.Value.ConnectionString));
+
+            if (clientSettings.SslSettings != null)
+            {
+                clientSettings.SslSettings = settings.Value.SslSettings;
+                clientSettings.UseSsl = true;
+            }
+            else
+            {
+                clientSettings.UseSsl = false;
+            }
+
             _client = new MongoClient(settings.Value.ConnectionString);
-            _database = _client.GetDatabase(settings.Value.Database);
+            Database = _client.GetDatabase(settings.Value.Database);
         }
 
-        protected IMongoDatabase Database { get { return _database; } }
+        protected IMongoDatabase Database { get; }
 
         public void Dispose()
-        { 
+        {
             // TODO
         }
     }

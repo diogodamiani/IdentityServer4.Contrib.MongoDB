@@ -5,6 +5,7 @@
 using IdentityServer4.MongoDB;
 using IdentityServer4.MongoDB.Configuration;
 using IdentityServer4.MongoDB.DbContexts;
+using IdentityServer4.MongoDB.Entities;
 using IdentityServer4.MongoDB.Interfaces;
 using IdentityServer4.MongoDB.Options;
 using IdentityServer4.MongoDB.Services;
@@ -14,6 +15,7 @@ using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using MongoDB.Bson.Serialization;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -37,8 +39,8 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         public static IIdentityServerBuilder AddOperationalStore(
-           this IIdentityServerBuilder builder, 
-           Action<MongoDBConfiguration> setupAction, 
+           this IIdentityServerBuilder builder,
+           Action<MongoDBConfiguration> setupAction,
            Action<TokenCleanupOptions> tokenCleanUpOptions = null)
         {
             builder.Services.Configure(setupAction);
@@ -47,7 +49,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         public static IIdentityServerBuilder AddOperationalStore(
-            this IIdentityServerBuilder builder, 
+            this IIdentityServerBuilder builder,
             IConfiguration configuration,
             Action<TokenCleanupOptions> tokenCleanUpOptions = null)
         {
@@ -59,6 +61,8 @@ namespace Microsoft.Extensions.DependencyInjection
         private static IIdentityServerBuilder AddConfigurationStore(
             this IIdentityServerBuilder builder)
         {
+            ConfigureIgnoreExtraElementsConfigurationStore();
+
             builder.Services.AddScoped<IConfigurationDbContext, ConfigurationDbContext>();
 
             builder.Services.AddTransient<IClientStore, ClientStore>();
@@ -69,9 +73,11 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         private static IIdentityServerBuilder AddOperationalStore(
-            this IIdentityServerBuilder builder, 
+            this IIdentityServerBuilder builder,
             Action<TokenCleanupOptions> tokenCleanUpOptions = null)
         {
+            ConfigureIgnoreExtraElementsOperationalStore();
+
             builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
 
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
@@ -95,6 +101,34 @@ namespace Microsoft.Extensions.DependencyInjection
             applicationLifetime.ApplicationStopping.Register(tokenCleanup.Stop);
 
             return app;
+        }
+
+        private static void ConfigureIgnoreExtraElementsConfigurationStore()
+        {
+            BsonClassMap.RegisterClassMap<Client>(cm =>
+            {
+                cm.AutoMap();
+                cm.SetIgnoreExtraElements(true);
+            });
+            BsonClassMap.RegisterClassMap<IdentityResource>(cm =>
+            {
+                cm.AutoMap();
+                cm.SetIgnoreExtraElements(true);
+            });
+            BsonClassMap.RegisterClassMap<ApiResource>(cm =>
+            {
+                cm.AutoMap();
+                cm.SetIgnoreExtraElements(true);
+            });
+        }
+
+        private static void ConfigureIgnoreExtraElementsOperationalStore()
+        {
+            BsonClassMap.RegisterClassMap<PersistedGrant>(cm =>
+            {
+                cm.AutoMap();
+                cm.SetIgnoreExtraElements(true);
+            });
         }
     }
 }

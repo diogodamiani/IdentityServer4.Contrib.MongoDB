@@ -32,7 +32,7 @@ namespace IdentityServer4.MongoDB.DbContexts
                 clientSettings.UseSsl = false;
             }
 
-            _client = new MongoClient(settings.Value.ConnectionString);
+            _client = new MongoClient(clientSettings);
             Database = _client.GetDatabase(settings.Value.Database);
         }
 

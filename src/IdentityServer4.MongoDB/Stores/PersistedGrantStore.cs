@@ -50,12 +50,18 @@ namespace IdentityServer4.MongoDB.Stores
             return Task.FromResult(model);
         }
 
-        public Task<IEnumerable<PersistedGrant>> GetAllAsync(string subjectId)
+        public Task<IEnumerable<PersistedGrant>> GetAllAsync(PersistedGrantFilter filter)
         {
-            var persistedGrants = _context.PersistedGrants.Where(x => x.SubjectId == subjectId).ToList();
+            Validate(filter);
+
+            var persistedGrants = _context.PersistedGrants.Where(
+                x => (string.IsNullOrWhiteSpace(filter.SubjectId) || x.SubjectId == filter.SubjectId) &&
+                                  (string.IsNullOrWhiteSpace(filter.ClientId) || x.ClientId == filter.ClientId) &&
+                                  (string.IsNullOrWhiteSpace(filter.Type) || x.Type == filter.Type)).ToList();
+
             var model = persistedGrants.Select(x => x.ToModel());
 
-            _logger.LogDebug("{persistedGrantCount} persisted grants found for {subjectId}", persistedGrants.Count, subjectId);
+            _logger.LogDebug($"{persistedGrants.Count} persisted grants found for filter: {filter}");
 
             return Task.FromResult(model);
         }
@@ -69,26 +75,30 @@ namespace IdentityServer4.MongoDB.Stores
             return Task.FromResult(0);
         }
 
-        public Task RemoveAllAsync(string subjectId, string clientId)
+        public Task RemoveAllAsync(PersistedGrantFilter filter)
         {
-            _logger.LogDebug("removing persisted grants from database for subject {subjectId}, clientId {clientId}", subjectId, clientId);
-
-            _context.Remove(x => x.SubjectId == subjectId && x.ClientId == clientId);
+            Validate(filter);
             
+            _logger.LogDebug($"removing persisted grants from database for filter: {filter}");
+
+            _context.Remove(
+                x => (string.IsNullOrWhiteSpace(filter.SubjectId) || x.SubjectId == filter.SubjectId) &&
+                     (string.IsNullOrWhiteSpace(filter.ClientId) || x.ClientId == filter.ClientId) &&
+                     (string.IsNullOrWhiteSpace(filter.Type) || x.Type == filter.Type));
+
             return Task.FromResult(0);
         }
 
-        public Task RemoveAllAsync(string subjectId, string clientId, string type)
+        private void Validate(PersistedGrantFilter filter)
         {
-            _logger.LogDebug("removing persisted grants from database for subject {subjectId}, clientId {clientId}, grantType {persistedGrantType}", subjectId, clientId, type);
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
 
-            _context.Remove(
-               x =>
-               x.SubjectId == subjectId &&
-               x.ClientId == clientId &&
-               x.Type == type);
-
-            return Task.FromResult(0);
+            if (string.IsNullOrWhiteSpace(filter.ClientId) &&
+                string.IsNullOrWhiteSpace(filter.SubjectId) &&
+                string.IsNullOrWhiteSpace(filter.Type))
+            {
+                throw new ArgumentException("No filter values set.", nameof(filter));
+            }
         }
     }
 }

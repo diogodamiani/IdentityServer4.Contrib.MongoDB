@@ -17,10 +17,12 @@ namespace IdentityServer4.MongoDB.DbContexts
             if (settings.Value.ConnectionString == null)
                 throw new ArgumentNullException(nameof(settings), "MongoDBConfiguration.ConnectionString cannot be null.");
 
-            if (settings.Value.Database == null)
+            var mongoUrl = MongoUrl.Create(settings.Value.ConnectionString);
+
+            if (settings.Value.Database == null && mongoUrl.DatabaseName == null)
                 throw new ArgumentNullException(nameof(settings), "MongoDBConfiguration.Database cannot be null.");
 
-            var clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.Value.ConnectionString));
+            var clientSettings = MongoClientSettings.FromUrl(mongoUrl);
 
             if (clientSettings.SslSettings != null)
             {
@@ -32,8 +34,8 @@ namespace IdentityServer4.MongoDB.DbContexts
                 clientSettings.UseSsl = false;
             }
 
-            _client = new MongoClient(settings.Value.ConnectionString);
-            Database = _client.GetDatabase(settings.Value.Database);
+            _client = new MongoClient(clientSettings);
+            Database = _client.GetDatabase(settings.Value.Database ?? mongoUrl.DatabaseName);
         }
 
         protected IMongoDatabase Database { get; }

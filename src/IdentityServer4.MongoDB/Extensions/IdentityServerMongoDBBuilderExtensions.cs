@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson.Serialization;
 using System;
-using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -91,7 +90,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IApplicationBuilder UseIdentityServerMongoDBTokenCleanup(this IApplicationBuilder app, IHostApplicationLifetime applicationLifetime)
+        public static IApplicationBuilder UseIdentityServerMongoDBTokenCleanup(this IApplicationBuilder app, IApplicationLifetime applicationLifetime)
         {
             var tokenCleanup = app.ApplicationServices.GetService<TokenCleanup>();
             if (tokenCleanup == null)

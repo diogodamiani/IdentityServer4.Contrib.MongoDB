@@ -27,11 +27,11 @@ namespace IdentityServer4.MongoDB.DbContexts
             if (clientSettings.SslSettings != null)
             {
                 clientSettings.SslSettings = settings.Value.SslSettings;
-                clientSettings.UseTls = true;
+                clientSettings.UseSsl = true;
             }
             else
             {
-                clientSettings.UseTls = false;
+                clientSettings.UseSsl = false;
             }
 
             _client = new MongoClient(clientSettings);

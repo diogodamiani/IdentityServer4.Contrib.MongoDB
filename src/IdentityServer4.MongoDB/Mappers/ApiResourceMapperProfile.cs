@@ -28,7 +28,7 @@ namespace IdentityServer4.MongoDB.Mappers
                 .ForMember(x => x.Scopes, opt => opt.MapFrom(src => src.Scopes.Select(x => x)))
                 .ForMember(x => x.UserClaims, opts => opts.MapFrom(src => src.UserClaims.Select(x => x.Type)));
             CreateMap<ApiSecret, Models.Secret>(MemberList.Destination);
-            CreateMap<ApiScope, Models.ApiScope>(MemberList.Destination)
+            CreateMap<ApiScope, Models.Scope>(MemberList.Destination)
                 .ForMember(x => x.UserClaims, opt => opt.MapFrom(src => src.UserClaims.Select(x => x.Type)));
 
             // model to entity
@@ -39,7 +39,7 @@ namespace IdentityServer4.MongoDB.Mappers
                 .ForMember(x => x.Scopes, opts => opts.MapFrom(src => src.Scopes.Select(x => x)))
                 .ForMember(x => x.UserClaims, opts => opts.MapFrom(src => src.UserClaims.Select(x => new ApiResourceClaim { Type = x })));
             CreateMap<Models.Secret, ApiSecret>(MemberList.Source);
-            CreateMap<Models.ApiScope, ApiScope>(MemberList.Source)
+            CreateMap<Models.Scope, ApiScope>(MemberList.Source)
                 .ForMember(x => x.UserClaims, opts => opts.MapFrom(src => src.UserClaims.Select(x => new ApiScopeClaim { Type = x })));
         }
     }

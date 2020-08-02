@@ -58,9 +58,9 @@ namespace IdentityServer4.Quickstart.UI
                 }).ToList();
 
             var allowLocal = true;
-            if (context?.Client.ClientId != null)
+            if (context?.ClientId != null)
             {
-                var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
+                var client = await _clientStore.FindEnabledClientByIdAsync(context.ClientId);
                 if (client != null)
                 {
                     allowLocal = client.EnableLocalLogin;

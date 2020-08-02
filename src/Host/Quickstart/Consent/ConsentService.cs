@@ -39,7 +39,7 @@ namespace IdentityServer4.Quickstart.UI
             // user clicked 'no' - send back the standard 'access_denied' response
             if (model.Button == "no")
             {
-                grantedConsent = new ConsentResponse { Error = AuthorizationError.AccessDenied };
+                grantedConsent = ConsentResponse.Denied;
             }
             // user clicked 'yes' - validate the data
             else if (model.Button == "yes" && model != null)
@@ -56,7 +56,7 @@ namespace IdentityServer4.Quickstart.UI
                     grantedConsent = new ConsentResponse
                     {
                         RememberConsent = model.RememberConsent,
-                        ScopesValuesConsented = scopes.ToArray()
+                        ScopesConsented = scopes.ToArray()
                     };
                 }
                 else
@@ -95,22 +95,22 @@ namespace IdentityServer4.Quickstart.UI
             var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
             if (request != null)
             {
-                var client = await _clientStore.FindEnabledClientByIdAsync(request.Client.ClientId);
+                var client = await _clientStore.FindEnabledClientByIdAsync(request.ClientId);
                 if (client != null)
                 {
-                    var resources = await _resourceStore.FindEnabledResourcesByScopeAsync(request.ValidatedResources.Resources.ToScopeNames());
+                    var resources = await _resourceStore.FindEnabledResourcesByScopeAsync(request.ScopesRequested);
                     if (resources != null && (resources.IdentityResources.Any() || resources.ApiResources.Any()))
                     {
                         return CreateConsentViewModel(model, returnUrl, request, client, resources);
                     }
                     else
                     {
-                        _logger.LogError("No scopes matching: {0}", request.ValidatedResources.Resources.ToScopeNames().Aggregate((x, y) => x + ", " + y));
+                        _logger.LogError("No scopes matching: {0}", request.ScopesRequested.Aggregate((x, y) => x + ", " + y));
                     }
                 }
                 else
                 {
-                    _logger.LogError("Invalid client id: {0}", request.Client.ClientId);
+                    _logger.LogError("Invalid client id: {0}", request.ClientId);
                 }
             }
             else
@@ -138,7 +138,7 @@ namespace IdentityServer4.Quickstart.UI
             vm.AllowRememberConsent = client.AllowRememberConsent;
 
             vm.IdentityScopes = resources.IdentityResources.Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
-            vm.ResourceScopes = resources.ApiScopes.Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
+            vm.ResourceScopes = resources.ApiResources.SelectMany(x => x.Scopes).Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
             if (ConsentOptions.EnableOfflineAccess && resources.OfflineAccess)
             {
                 vm.ResourceScopes = vm.ResourceScopes.Union(new ScopeViewModel[] {
@@ -162,7 +162,7 @@ namespace IdentityServer4.Quickstart.UI
             };
         }
 
-        public ScopeViewModel CreateScopeViewModel(ApiScope scope, bool check)
+        public ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
         {
             return new ScopeViewModel
             {

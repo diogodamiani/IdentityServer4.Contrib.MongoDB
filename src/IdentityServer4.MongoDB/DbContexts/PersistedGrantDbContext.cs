@@ -68,7 +68,7 @@ namespace IdentityServer4.MongoDB.DbContexts
 
         public Task InsertOrUpdate(Expression<Func<PersistedGrant, bool>> filter, PersistedGrant entity)
         {
-            return _persistedGrants.ReplaceOneAsync(filter, entity, new UpdateOptions() {IsUpsert = true});
+            return _persistedGrants.ReplaceOneAsync(filter, entity, new ReplaceOptions() {IsUpsert = true});
         }
     }
 }

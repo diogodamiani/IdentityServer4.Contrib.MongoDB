@@ -24,52 +24,52 @@ namespace IdentityServer4.MongoDB.Stores
             _logger = logger;
         }
 
-        public Task<ApiResource> FindApiResourceAsync(string name)
+        public Task<IEnumerable<ApiResource>> FindApiResourcesByNameAsync(IEnumerable<string> apiResourceNames)
         {
-            var apis =
-                from apiResource in _context.ApiResources
-                where apiResource.Name == name
-                select apiResource;
-
-            var api = apis.FirstOrDefault();
-
-            if (api != null)
-            {
-                _logger.LogDebug("Found {api} API resource in database", name);
-            }
-            else
-            {
-                _logger.LogDebug("Did not find {api} API resource in database", name);
-            }
-
-            return Task.FromResult(api.ToModel());
-        }
-
-        public Task<IEnumerable<ApiResource>> FindApiResourcesByScopeAsync(IEnumerable<string> scopeNames)
-        {
-            var names = scopeNames.ToArray();
-
-            var apis =
-                from api in _context.ApiResources
-                where api.Scopes.Where(x => names.Contains(x.Name)).Any()
-                select api;
+            var names = apiResourceNames.ToArray();
+            var apis = _context.ApiResources.Where(x => names.Contains(x.Name));
 
             var results = apis.ToArray();
             var models = results.Select(x => x.ToModel()).ToArray();
 
-            _logger.LogDebug("Found {scopes} API scopes in database", models.SelectMany(x => x.Scopes).Select(x => x.Name));
+            _logger.LogDebug("Found {scopes} API resources in database", models.Select(x => x.Scopes));
 
             return Task.FromResult(models.AsEnumerable());
         }
 
-        public Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(IEnumerable<string> scopeNames)
+        public Task<IEnumerable<ApiScope>> FindApiScopesByNameAsync(IEnumerable<string> scopeNames)
+        {
+            var names = scopeNames.ToArray();
+            var apis = _context.ApiResources.SelectMany(x => x.Scopes).Where(x => names.Contains(x.Name));
+
+            var results = apis.ToArray();
+            var models = results.Select(x => x.ToModel()).ToArray();
+
+            _logger.LogDebug("Found {scopes} API scopes in database", models.Select(x => x.Name));
+
+            return Task.FromResult(models.AsEnumerable());
+
+        }
+
+        public Task<IEnumerable<ApiResource>> FindApiResourcesByScopeNameAsync(IEnumerable<string> scopeNames)
+        {
+            var names = scopeNames.ToArray();
+
+            var apis = _context.ApiResources.Where(x => x.Scopes.Any(y => names.Contains(y.Name)));
+
+            var results = apis.ToArray();
+            var models = results.Select(x => x.ToModel()).ToArray();
+
+            _logger.LogDebug("Found {scopes} API resources in database", models.Select(x => x.Scopes));
+
+            return Task.FromResult(models.AsEnumerable());
+        }
+
+        public Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeNameAsync(IEnumerable<string> scopeNames)
         {
             var scopes = scopeNames.ToArray();
 
-            var resources =
-                from identityResource in _context.IdentityResources
-                where scopes.Contains(identityResource.Name)
-                select identityResource;
+            var resources = _context.IdentityResources.Where(x => scopes.Contains(x.Name));
 
             var results = resources.ToArray();
 
@@ -84,11 +84,14 @@ namespace IdentityServer4.MongoDB.Stores
 
             var apis = _context.ApiResources;
 
+            var scopes = _context.ApiResources.SelectMany(x => x.Scopes);
+
             var result = new Resources(
                 identity.ToArray().Select(x => x.ToModel()).AsEnumerable(),
-                apis.ToArray().Select(x => x.ToModel()).AsEnumerable());
+                apis.ToArray().Select(x => x.ToModel()).AsEnumerable(),
+                scopes.ToArray().Select(x => x.ToModel()).AsEnumerable());
 
-            _logger.LogDebug("Found {scopes} as all scopes in database", result.IdentityResources.Select(x => x.Name).Union(result.ApiResources.SelectMany(x => x.Scopes).Select(x => x.Name)));
+            _logger.LogDebug("Found {scopes} as all scopes in database", result.IdentityResources.Select(x => x.Name).Union(result.ApiResources.SelectMany(x => x.Scopes)));
 
             return Task.FromResult(result);
         }

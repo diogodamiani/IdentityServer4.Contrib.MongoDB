@@ -15,6 +15,7 @@ using System;
 using System.Linq;
 using IdentityServer4;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Host
 {
@@ -27,7 +28,7 @@ namespace Host
             _config = config;
         }
 
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
 
@@ -52,12 +53,12 @@ namespace Host
                 .AddAppAuthRedirectUriValidator()
                 .AddTestUsers(TestUsers.Users);
 
-            services.AddExternalIdentityProviders();
+            services.AddMvc(option => option.EnableEndpointRouting = false);
 
-            return services.BuildServiceProvider(validateScopes: true);
+            services.AddExternalIdentityProviders();
         }
 
-        public void Configure(IApplicationBuilder app, IApplicationLifetime applicationLifetime)
+        public void Configure(IApplicationBuilder app, IHostApplicationLifetime applicationLifetime)
         {
             app.UseDeveloperExceptionPage();
             

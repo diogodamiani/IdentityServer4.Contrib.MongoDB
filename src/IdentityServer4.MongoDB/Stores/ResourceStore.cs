@@ -40,10 +40,7 @@ namespace IdentityServer4.MongoDB.Stores
         public Task<IEnumerable<ApiScope>> FindApiScopesByNameAsync(IEnumerable<string> scopeNames)
         {
             var names = scopeNames.ToArray();
-            var apis = _context.ApiResources.SelectMany(x => x.Scopes).Where(x => names.Contains(x.Name));
-
-            var results = apis.ToArray();
-            var models = results.Select(x => x.ToModel()).ToArray();
+            var models = _context.ApiScopes.Where(x => names.Contains(x.Name)).Select(x => x.ToModel());
 
             _logger.LogDebug("Found {scopes} API scopes in database", models.Select(x => x.Name));
 
@@ -55,7 +52,7 @@ namespace IdentityServer4.MongoDB.Stores
         {
             var names = scopeNames.ToArray();
 
-            var apis = _context.ApiResources.Where(x => x.Scopes.Any(y => names.Contains(y.Name)));
+            var apis = _context.ApiResources.Where(x => x.Scopes.Any(y => names.Contains(y)));
 
             var results = apis.ToArray();
             var models = results.Select(x => x.ToModel()).ToArray();
@@ -84,7 +81,7 @@ namespace IdentityServer4.MongoDB.Stores
 
             var apis = _context.ApiResources;
 
-            var scopes = _context.ApiResources.SelectMany(x => x.Scopes);
+            var scopes = _context.ApiScopes;
 
             var result = new Resources(
                 identity.ToArray().Select(x => x.ToModel()).AsEnumerable(),

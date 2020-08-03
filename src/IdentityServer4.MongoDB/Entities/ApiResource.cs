@@ -14,7 +14,7 @@ namespace IdentityServer4.MongoDB.Entities
         public IDictionary<string, string> Properties { get; set; }
 
         public List<ApiSecret> Secrets { get; set; }
-        public List<ApiScope> Scopes { get; set; }
+        public List<string> Scopes { get; set; }
         public List<ApiResourceClaim> UserClaims { get; set; }
     }
 }

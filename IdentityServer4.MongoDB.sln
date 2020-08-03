@@ -14,6 +14,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Host", "src\Host\Host.cspro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.MongoDB", "src\IdentityServer4.MongoDB\IdentityServer4.MongoDB.csproj", "{A3A275B3-6017-4C98-B1E3-451EE07EF4F4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{CFAC3A63-E145-473E-9AA0-99EA17EC757D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer4.Tests.MongoDB", "test\IdentityServer4.Tests.MongoDB\IdentityServer4.Tests.MongoDB.csproj", "{277D3533-13CC-462E-9BA0-74BAF2658D07}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +32,10 @@ Global
 		{A3A275B3-6017-4C98-B1E3-451EE07EF4F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3A275B3-6017-4C98-B1E3-451EE07EF4F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3A275B3-6017-4C98-B1E3-451EE07EF4F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{277D3533-13CC-462E-9BA0-74BAF2658D07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{277D3533-13CC-462E-9BA0-74BAF2658D07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{277D3533-13CC-462E-9BA0-74BAF2658D07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{277D3533-13CC-462E-9BA0-74BAF2658D07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -35,5 +43,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{00F607AE-4853-42A1-B536-F3B7759E1987} = {1E3859B1-7876-4B22-B7B6-1049D0344E52}
 		{A3A275B3-6017-4C98-B1E3-451EE07EF4F4} = {1E3859B1-7876-4B22-B7B6-1049D0344E52}
+		{277D3533-13CC-462E-9BA0-74BAF2658D07} = {CFAC3A63-E145-473E-9AA0-99EA17EC757D}
 	EndGlobalSection
 EndGlobal

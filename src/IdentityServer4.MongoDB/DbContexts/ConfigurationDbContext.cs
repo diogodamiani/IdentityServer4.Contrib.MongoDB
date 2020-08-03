@@ -16,6 +16,7 @@ namespace IdentityServer4.MongoDB.DbContexts
         private readonly IMongoCollection<Client> _clients;
         private readonly IMongoCollection<IdentityResource> _identityResources;
         private readonly IMongoCollection<ApiResource> _apiResources;
+        private readonly IMongoCollection<ApiScope> _apiScopes;
 
         public ConfigurationDbContext(IOptions<MongoDBConfiguration> settings)
             : base(settings)
@@ -23,10 +24,12 @@ namespace IdentityServer4.MongoDB.DbContexts
             _clients = Database.GetCollection<Client>(Constants.TableNames.Client);
             _identityResources = Database.GetCollection<IdentityResource>(Constants.TableNames.IdentityResource);
             _apiResources = Database.GetCollection<ApiResource>(Constants.TableNames.ApiResource);
+            _apiScopes = Database.GetCollection<ApiScope>(Constants.TableNames.ApiScope);
 
             CreateClientsIndexes();
             CreateIdentityResourcesIndexes();
             CreateApiResourcesIndexes();
+            CreateApiScopesIndexes();
         }
 
         private void CreateClientsIndexes()
@@ -58,6 +61,15 @@ namespace IdentityServer4.MongoDB.DbContexts
             _apiResources.Indexes.CreateOne(scopesIndexModel);
         }
 
+        private void CreateApiScopesIndexes()
+        {
+            var indexOptions = new CreateIndexOptions { Background = true };
+
+            var builder = Builders<ApiScope>.IndexKeys;
+            var nameIndexModel = new CreateIndexModel<ApiScope>(builder.Ascending(_ => _.Name), indexOptions);
+            _apiScopes.Indexes.CreateOne(nameIndexModel);
+        }
+
         public IQueryable<Client> Clients
         {
             get { return _clients.AsQueryable(); }
@@ -73,6 +85,8 @@ namespace IdentityServer4.MongoDB.DbContexts
             get { return _apiResources.AsQueryable(); }
         }
 
+        public IQueryable<ApiScope> ApiScopes => this._apiScopes.AsQueryable();
+
         public async Task AddClient(Client entity)
         {
             await _clients.InsertOneAsync(entity);
@@ -86,6 +100,11 @@ namespace IdentityServer4.MongoDB.DbContexts
         public async Task AddApiResource(ApiResource entity)
         {
             await _apiResources.InsertOneAsync(entity);
+        }
+
+        public async Task AddApiScope(ApiScope entity)
+        {
+            await this._apiScopes.InsertOneAsync(entity);
         }
     }
 }

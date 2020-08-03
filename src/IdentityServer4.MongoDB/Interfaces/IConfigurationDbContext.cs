@@ -14,11 +14,14 @@ namespace IdentityServer4.MongoDB.Interfaces
         IQueryable<Client> Clients { get; }
         IQueryable<IdentityResource> IdentityResources { get; }
         IQueryable<ApiResource> ApiResources { get; }
+        IQueryable<ApiScope> ApiScopes { get; }
 
         Task AddClient(Client entity);
 
         Task AddIdentityResource(IdentityResource entity);
 
         Task AddApiResource(ApiResource entity);
+
+        Task AddApiScope(ApiScope entity);
     }
 }

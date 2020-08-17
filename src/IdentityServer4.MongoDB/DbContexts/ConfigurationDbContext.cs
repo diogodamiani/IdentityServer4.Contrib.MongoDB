@@ -70,22 +70,13 @@ namespace IdentityServer4.MongoDB.DbContexts
             _apiScopes.Indexes.CreateOne(nameIndexModel);
         }
 
-        public IQueryable<Client> Clients
-        {
-            get { return _clients.AsQueryable(); }
-        }
+        public IQueryable<Client> Clients => _clients.AsQueryable();
 
-        public IQueryable<IdentityResource> IdentityResources
-        {
-            get { return _identityResources.AsQueryable(); }
-        }
+        public IQueryable<IdentityResource> IdentityResources => _identityResources.AsQueryable();
 
-        public IQueryable<ApiResource> ApiResources
-        {
-            get { return _apiResources.AsQueryable(); }
-        }
+        public IQueryable<ApiResource> ApiResources => _apiResources.AsQueryable();
 
-        public IQueryable<ApiScope> ApiScopes => this._apiScopes.AsQueryable();
+        public IQueryable<ApiScope> ApiScopes => _apiScopes.AsQueryable();
 
         public async Task AddClient(Client entity)
         {

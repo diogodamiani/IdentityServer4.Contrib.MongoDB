@@ -59,5 +59,22 @@ namespace Host.Configuration
                 }
             };
         }
+
+        public static IEnumerable<ApiScope> GetApiScopes()
+        {
+            return new[]
+            {
+                new ApiScope()
+                {
+                    Name = "api2.full_access",
+                    DisplayName = "Full access to API 2",
+                },
+                new ApiScope
+                {
+                    Name = "api2.read_only",
+                    DisplayName = "Read only access to API 2"
+                }
+            };
+        }
     }
 }

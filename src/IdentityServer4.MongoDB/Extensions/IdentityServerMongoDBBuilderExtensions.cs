@@ -121,6 +121,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 cm.AutoMap();
                 cm.SetIgnoreExtraElements(true);
             });
+            BsonClassMap.RegisterClassMap<ApiScope>(cm =>
+            {
+              cm.AutoMap();
+              cm.SetIgnoreExtraElements(true);
+            });
         }
 
         private static void ConfigureIgnoreExtraElementsOperationalStore()

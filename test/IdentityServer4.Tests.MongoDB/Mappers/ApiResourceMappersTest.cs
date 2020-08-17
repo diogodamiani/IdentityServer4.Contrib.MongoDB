@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using IdentityServer4.MongoDB.Entities;
 using IdentityServer4.MongoDB.Mappers;
 using Xunit;

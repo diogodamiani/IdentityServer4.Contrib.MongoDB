@@ -100,6 +100,14 @@ namespace Host
                     context.AddApiResource(resource.ToEntity());
                 }
             }
+
+            if (!context.ApiScopes.Any())
+            {
+                foreach (var resource in Resources.GetApiScopes().ToList())
+                {
+                  context.AddApiScope(resource.ToEntity());
+                }
+            }
         }
     }
 

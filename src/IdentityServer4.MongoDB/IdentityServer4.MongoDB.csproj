@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>MongoDB persistence layer for IdentityServer4</Description>
-    <VersionPrefix>4.0.0-rc.1</VersionPrefix>
+    <VersionPrefix>4.0.0-rc.2</VersionPrefix>
     <Authors>Diogo Damiani</Authors>
     <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     <AssemblyName>IdentityServer4.Contrib.MongoDB</AssemblyName>
@@ -15,7 +15,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>4.0.0-rc.1</Version>
+    <Version>4.0.0-rc.2</Version>
     <PackageReleaseNotes>Migration to .NET Core 3.1 and IdentityServer 4.0</PackageReleaseNotes>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>

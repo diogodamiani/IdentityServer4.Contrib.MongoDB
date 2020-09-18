@@ -58,7 +58,7 @@ namespace Host
             services.AddExternalIdentityProviders();
         }
 
-        public void Configure(IApplicationBuilder app, IHostApplicationLifetime applicationLifetime)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseDeveloperExceptionPage();
             
@@ -69,7 +69,6 @@ namespace Host
             }
 
             app.UseIdentityServer();
-            app.UseIdentityServerMongoDBTokenCleanup(applicationLifetime);
 
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();

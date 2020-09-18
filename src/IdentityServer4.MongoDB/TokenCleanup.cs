@@ -12,97 +12,49 @@ using System.Threading.Tasks;
 
 namespace IdentityServer4.MongoDB
 {
-    internal class TokenCleanup
+    public class TokenCleanup
     {
+        private readonly IPersistedGrantDbContext _persistedGrantDbContext;
         private readonly ILogger<TokenCleanup> _logger;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly TimeSpan _interval;
-        private CancellationTokenSource _source;
 
-        public TokenCleanup(IServiceProvider serviceProvider, ILogger<TokenCleanup> logger, TokenCleanupOptions options)
+        public TokenCleanup(IPersistedGrantDbContext persistedGrantDbContext, ILogger<TokenCleanup> logger)
         {
-            if (options == null) throw new ArgumentNullException(nameof(options));
-            if (options.Interval < 1) throw new ArgumentException("interval must be more than 1 second");
-
+            _persistedGrantDbContext = persistedGrantDbContext;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-            _interval = TimeSpan.FromSeconds(options.Interval);
         }
 
-        public void Start()
-        {
-            if (_source != null) throw new InvalidOperationException("Already started. Call Stop first.");
+        /// <summary>
+        /// Method to clear expired persisted grants.
+        /// </summary>
+        /// <returns></returns>
+        public async Task RemoveExpiredGrantsAsync() {
+            try {
+                _logger.LogTrace("Querying for expired grants to remove");
 
-            _logger.LogDebug("Starting token cleanup");
-
-            _source = new CancellationTokenSource();
-            Task.Factory.StartNew(() => Start(_source.Token));
-        }
-
-        public void Stop()
-        {
-            if (_source == null) throw new InvalidOperationException("Not started. Call Start first.");
-
-            _logger.LogDebug("Stopping token cleanup");
-
-            _source.Cancel();
-            _source = null;
-        }
-
-        private async Task Start(CancellationToken cancellationToken)
-        {
-            while (true)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    _logger.LogDebug("CancellationRequested");
-                    break;
-                }
-
-                try
-                {
-                    await Task.Delay(_interval, cancellationToken);
-                }
-                catch
-                {
-                    _logger.LogDebug("Task.Delay exception. exiting.");
-                    break;
-                }
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    _logger.LogDebug("CancellationRequested");
-                    break;
-                }
-
-                _ = ClearTokens();
+                await RemoveGrantsAsync();
+                //await RemoveDeviceCodesAsync();
+            }
+            catch (Exception ex) {
+                _logger.LogError("Exception removing expired grants: {exception}", ex.Message);
             }
         }
 
-        private async Task ClearTokens()
+        /// <summary>
+        /// Removes the stale persisted grants.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual async Task RemoveGrantsAsync()
         {
-            try
+            var expired = _persistedGrantDbContext.PersistedGrants
+                .Where(x => x.Expiration < DateTime.UtcNow)
+                .ToArray();
+
+            var found = expired.Length;
+            _logger.LogDebug("Removing {grantCount} tokens", found);
+
+            if (found > 0)
             {
-                _logger.LogTrace("Querying for tokens to clear");
-
-                using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                {
-                    using (var context = serviceScope.ServiceProvider.GetService<IPersistedGrantDbContext>())
-                    {
-                        var expired = context.PersistedGrants.Where(x => x.Expiration < DateTime.UtcNow).ToArray();
-
-                        _logger.LogDebug("Clearing {tokenCount} tokens", expired.Length);
-
-                        if (expired.Length > 0)
-                        {
-                            await context.RemoveExpired();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Exception cleaning tokens {exception}", ex.Message);
+                await _persistedGrantDbContext.RemoveExpired();
             }
         }
     }

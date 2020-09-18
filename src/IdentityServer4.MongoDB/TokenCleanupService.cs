@@ -31,7 +31,7 @@ namespace IdentityServer4.MongoDB {
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
             _logger.LogDebug("Starting grant removal");
-            if (_options.EnableTokenCleanup) {
+            if (_options.Enable) {
                 while (!stoppingToken.IsCancellationRequested) {
                     await RemoveExpiredGrantsAsync().ConfigureAwait(false);
 

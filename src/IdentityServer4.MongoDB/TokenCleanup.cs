@@ -32,7 +32,7 @@ namespace IdentityServer4.MongoDB
                 _logger.LogTrace("Querying for expired grants to remove");
 
                 await RemoveGrantsAsync();
-                //await RemoveDeviceCodesAsync();
+                //TODO: await RemoveDeviceCodesAsync();
             }
             catch (Exception ex) {
                 _logger.LogError("Exception removing expired grants: {exception}", ex.Message);
@@ -50,7 +50,7 @@ namespace IdentityServer4.MongoDB
                 .ToArray();
 
             var found = expired.Length;
-            _logger.LogDebug("Removing {grantCount} tokens", found);
+            _logger.LogDebug("Removing {grantCount} grants", found);
 
             if (found > 0)
             {

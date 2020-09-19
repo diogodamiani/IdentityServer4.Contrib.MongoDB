@@ -86,22 +86,10 @@ namespace Microsoft.Extensions.DependencyInjection
             var tokenCleanupOptions = new TokenCleanupOptions();
             tokenCleanUpOptions?.Invoke(tokenCleanupOptions);
             builder.Services.AddSingleton(tokenCleanupOptions);
-            builder.Services.AddSingleton<TokenCleanup>();
+            builder.Services.AddTransient<TokenCleanup>();
+            builder.Services.AddSingleton<IHostedService, TokenCleanupService>();
 
             return builder;
-        }
-
-        public static IApplicationBuilder UseIdentityServerMongoDBTokenCleanup(this IApplicationBuilder app, IHostApplicationLifetime applicationLifetime)
-        {
-            var tokenCleanup = app.ApplicationServices.GetService<TokenCleanup>();
-            if (tokenCleanup == null)
-            {
-                throw new InvalidOperationException("AddOperationalStore must be called on the service collection.");
-            }
-            applicationLifetime.ApplicationStarted.Register(tokenCleanup.Start);
-            applicationLifetime.ApplicationStopping.Register(tokenCleanup.Stop);
-
-            return app;
         }
 
         private static void ConfigureIgnoreExtraElementsConfigurationStore()

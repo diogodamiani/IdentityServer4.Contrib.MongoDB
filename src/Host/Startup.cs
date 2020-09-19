@@ -16,6 +16,7 @@ using System.Linq;
 using IdentityServer4;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using IdentityServer4.MongoDB.Options;
 
 namespace Host
 {
@@ -45,7 +46,7 @@ namespace Host
                     options.Events.RaiseErrorEvents = true;
                 })
                 .AddConfigurationStore(_config.GetSection("MongoDB"))
-                .AddOperationalStore(_config.GetSection("MongoDB"))
+                .AddOperationalStore(_config.GetSection("MongoDB"), _ => new TokenCleanupOptions() { Enable = true, Interval = 3600 })
                 .AddDeveloperSigningCredential()
                 .AddExtensionGrantValidator<Extensions.ExtensionGrantValidator>()
                 .AddExtensionGrantValidator<Extensions.NoSubjectExtensionGrantValidator>()
@@ -58,7 +59,7 @@ namespace Host
             services.AddExternalIdentityProviders();
         }
 
-        public void Configure(IApplicationBuilder app, IHostApplicationLifetime applicationLifetime)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseDeveloperExceptionPage();
             
@@ -69,7 +70,6 @@ namespace Host
             }
 
             app.UseIdentityServer();
-            app.UseIdentityServerMongoDBTokenCleanup(applicationLifetime);
 
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();

@@ -24,7 +24,7 @@ namespace IdentityServer4.MongoDB.DbContexts
 
             var clientSettings = MongoClientSettings.FromUrl(mongoUrl);
 
-            if (clientSettings.SslSettings != null)
+            if (settings.Value.SslSettings != null)
             {
                 clientSettings.SslSettings = settings.Value.SslSettings;
                 clientSettings.UseTls = true;

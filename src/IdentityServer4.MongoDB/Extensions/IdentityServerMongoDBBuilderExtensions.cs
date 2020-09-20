@@ -12,16 +12,14 @@ using IdentityServer4.MongoDB.Services;
 using IdentityServer4.MongoDB.Stores;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using MongoDB.Bson.Serialization;
 using System;
-using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IdentityServerMongoDBBuilderExtensions
+  public static class IdentityServerMongoDBBuilderExtensions
     {
         public static IIdentityServerBuilder AddConfigurationStore(
            this IIdentityServerBuilder builder, Action<MongoDBConfiguration> setupAction)
@@ -83,9 +81,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
 
-            var tokenCleanupOptions = new TokenCleanupOptions();
-            tokenCleanUpOptions?.Invoke(tokenCleanupOptions);
-            builder.Services.AddSingleton(tokenCleanupOptions);
+            var tco = new TokenCleanupOptions();
+            tokenCleanUpOptions?.Invoke(tco);
+            builder.Services.AddSingleton(tco);
             builder.Services.AddTransient<TokenCleanup>();
             builder.Services.AddSingleton<IHostedService, TokenCleanupService>();
 

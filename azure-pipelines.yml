@@ -15,11 +15,7 @@ trigger:
     - defects/*
 
 pool:
-  name: 'Landstar'
-
-variables:
-  IsMasterBranch: $[ eq(variables['Build.SourceBranch'], 'refs/heads/master') ]
-  IsDevrBranch: $[ eq(variables['Build.SourceBranch'], 'refs/heads/dev') ]
+  name: 'default'
 
 steps:
 - powershell: |
@@ -67,7 +63,7 @@ steps:
  
 - task: DotNetCoreCLI@2 
   displayName: Create Nuget Packages
-  condition: and(succeeded(), eq(variables['IsDevBranch'], True))
+  condition: succeeded()
   inputs:
     command: 'pack'
     includesymbols: true
@@ -76,7 +72,7 @@ steps:
 
 - task: NuGetCommand@2
   displayName: Push Nuget Packages
-  condition: and(succeeded(), eq(variables['IsDevBranch'], True))
+  condition: succeeded()
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'

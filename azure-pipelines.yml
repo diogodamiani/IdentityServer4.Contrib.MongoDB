@@ -7,6 +7,7 @@ trigger:
   batch: true
   branches:
     include:
+    - dev
     - master
     - feature/*
     - features/*
@@ -18,6 +19,7 @@ pool:
 
 variables:
   IsMasterBranch: $[ eq(variables['Build.SourceBranch'], 'refs/heads/master') ]
+  IsDevrBranch: $[ eq(variables['Build.SourceBranch'], 'refs/heads/dev') ]
 
 steps:
 - powershell: |
@@ -65,7 +67,7 @@ steps:
  
 - task: DotNetCoreCLI@2 
   displayName: Create Nuget Packages
-  condition: and(succeeded(),  eq(variables['IsMasterBranch'], True))
+  condition: and(succeeded(), or[ eq(variables['IsMasterBranch'], True), eq(variables['IsDevBranch'], True)])
   inputs:
     command: 'pack'
     includesymbols: true
@@ -74,7 +76,7 @@ steps:
 
 - task: NuGetCommand@2
   displayName: Push Nuget Packages
-  condition: and(succeeded(),  eq(variables['IsMasterBranch'], True))
+  condition: and(succeeded(), or[ eq(variables['IsMasterBranch'], True), eq(variables['IsDevBranch'], True)])
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'

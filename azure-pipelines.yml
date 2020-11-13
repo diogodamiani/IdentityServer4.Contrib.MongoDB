@@ -67,7 +67,7 @@ steps:
  
 - task: DotNetCoreCLI@2 
   displayName: Create Nuget Packages
-  condition: and(succeeded(), or[ eq(variables['IsMasterBranch'], True), eq(variables['IsDevBranch'], True)])
+  condition: and(succeeded(), eq(variables['IsDevBranch'], True))
   inputs:
     command: 'pack'
     includesymbols: true
@@ -76,7 +76,7 @@ steps:
 
 - task: NuGetCommand@2
   displayName: Push Nuget Packages
-  condition: and(succeeded(), or[ eq(variables['IsMasterBranch'], True), eq(variables['IsDevBranch'], True)])
+  condition: and(succeeded(), eq(variables['IsDevBranch'], True))
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'

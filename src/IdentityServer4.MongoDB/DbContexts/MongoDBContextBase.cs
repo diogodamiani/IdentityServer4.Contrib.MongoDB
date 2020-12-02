@@ -23,7 +23,7 @@ namespace IdentityServer4.MongoDB.DbContexts
                 throw new ArgumentNullException(nameof(settings), "MongoDBConfiguration.Database cannot be null.");
 
             var clientSettings = MongoClientSettings.FromUrl(mongoUrl);
-
+      
             if (settings.Value.SslSettings != null)
             {
                 clientSettings.SslSettings = settings.Value.SslSettings;

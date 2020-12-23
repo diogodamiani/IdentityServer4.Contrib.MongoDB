@@ -44,5 +44,27 @@ namespace IdentityServer4.Tests.MongoDB.Mappers
                 scope => Assert.Equal("api.scope2", scope)
             );
         }
+
+        [Fact]
+        public void ToModel_WithUserClaims_MapsCorrectly()
+        {
+            var toBeMapped = new ApiResource {
+                Name = "my-api",
+                DisplayName = "My API",
+                Scopes = new List<string> { "api", "api.scope1", "api.scope2" },
+                UserClaims = new List<ApiResourceClaim> {
+                    new ApiResourceClaim { Id = 1, Type = "claim1" },
+                    new ApiResourceClaim { Id = 2, Type = "claim2" }
+                }
+            };
+
+            var mappedModel = toBeMapped.ToModel();
+            
+            Assert.Collection(
+                mappedModel.UserClaims,
+                claim => Assert.Equal("claim1", claim),
+                claim => Assert.Equal("claim2", claim)
+            );
+        }
     }
 }

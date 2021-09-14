@@ -15,6 +15,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <IsPackable>true</IsPackable>
     <Version>4.0.0-rc.2</Version>
     <PackageReleaseNotes>Migration to .NET Core 3.1 and IdentityServer 4.0
 Fix #31, #34

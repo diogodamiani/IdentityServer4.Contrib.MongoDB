@@ -1,10 +1,10 @@
 version: 1.0.{build}
 
-image: Visual Studio 2017
+image: Visual Studio 2019
  
 install:  
-- cmd: curl -O https://download.microsoft.com/download/0/F/D/0FD852A4-7EA1-4E2A-983A-0484AC19B92C/dotnet-sdk-2.0.0-win-x64.exe  
-- cmd: dotnet-sdk-2.0.0-win-x64.exe /install /quiet /norestart /log install.log   
+- cmd: curl -O https://download.visualstudio.microsoft.com/download/pr/046165a4-10d4-4156-8e65-1d7b2cbd304e/a4c7b01f6bf7199669a45ab6a03803ac/dotnet-sdk-3.1.412-win-x64.exe
+- cmd: dotnet-sdk-3.1.412-win-x64.exe /install /quiet /norestart /log install.log   
 
 branches:
   only:
